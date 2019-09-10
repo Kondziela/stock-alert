@@ -1,4 +1,6 @@
-var request = require('./request.js').requestToTiingo;
+var request = require('./request.js').requestToTiingo,
+	isInLow10Percent = require('./util.js').isInLow10Percent,
+	sorters = require('./sorters');
 
 // 252 is max of range
 var days252Ago = () => {
@@ -13,14 +15,21 @@ var days252Ago = () => {
 var companies = ['amd'];
 
 
-request('amd', /*yearAgo()*/ '2019-09-08')
-	.then((body) => 
-		console.log(JSON.parse(body).map( object => {return {
+request('amd', /*yearAgo()*/ '2019-09-02')
+	.then((body) => {
+		let allValues = JSON.parse(body).map( object => {return {
 			'date': object.date,
-			'close': object.close,
-			'high': object.high,
-			'low': object.low,
-			'open': object.open
-		}}))
+			'close': object.close
+			// 'high': object.high,
+			// 'low': object.low,
+			// 'open': object.open
+		}})
+
+		console.log(allValues[allValues.length - 1]);
+		console.log(allValues);
+		let isLow = isInLow10Percent(allValues[allValues.length - 1], allValues.sort(sorters.sortByClose));
+
+		console.log(isLow);
+	}
 	);
 
