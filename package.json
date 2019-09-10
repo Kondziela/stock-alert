@@ -1,0 +1,27 @@
+{
+  "name": "stock-alert",
+  "version": "1.0.0",
+  "description": "Analyse and inform about stock trade",
+  "main": "index.js",
+  "dependencies": {
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kondziela/stock-alert.git"
+  },
+  "keywords": [
+    "stock-trade"
+  ],
+  "author": "AKondziela",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kondziela/stock-alert/issues"
+  },
+  "homepage": "https://github.com/Kondziela/stock-alert#readme"
+}
