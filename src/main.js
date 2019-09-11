@@ -1,6 +1,7 @@
 var request = require('./request.js').requestToTiingo,
 	isInLow10Percent = require('./util.js').isInLow10Percent,
-	sorters = require('./sorters');
+	sorters = require('./sorters'),
+	parser = require('./parser');
 
 // 252 is max of range
 var days252Ago = () => {
@@ -17,13 +18,7 @@ var companies = ['amd'];
 
 request('amd', /*yearAgo()*/ '2019-09-02')
 	.then((body) => {
-		let allValues = JSON.parse(body).map( object => {return {
-			'date': object.date,
-			'close': object.close
-			// 'high': object.high,
-			// 'low': object.low,
-			// 'open': object.open
-		}})
+		let allValues = parser.parseTiingoResponse(body);
 
 		console.log(allValues[allValues.length - 1]);
 		console.log(allValues);
