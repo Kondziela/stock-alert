@@ -19,7 +19,7 @@ let processCompany = (company) => {
 				if (isLow) {
 					let measureMetric = metrics.generateSetMetrics(allValues, "close"),
 						slackString = company.name + ": current: " + todaysValue.close + ": min: " + measureMetric.min.close + ", max: " + measureMetric.max.close;
-						console.log(`Found metrics for company {company.name} measureMetric`);
+						console.log(`Found metrics for company ${company.name} ${measureMetric}`);
 					sendToSlack(slackString);
 				}
 			});

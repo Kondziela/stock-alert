@@ -2,8 +2,9 @@
   "name": "stock-alert",
   "version": "1.0.0",
   "description": "Analyse and inform about stock trade",
-  "main": "src/scheduler.js",
+  "main": "index.js",
   "dependencies": {
+    "express": "^4.17.1",
     "node-schedule": "^1.3.2",
     "nodemailer": "^6.3.0",
     "request": "^2.88.0",
@@ -13,7 +14,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "test",
-    "start": "node src/scheduler.js",
+    "start": "node index.js",
     "start-once": "node src/main.js"
   },
   "repository": {

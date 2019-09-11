@@ -7,7 +7,7 @@ How to start:
  - add file token.js with your https://www.tiingo.com/ token in root path
  	module.exports = "YOUR TOKEN"
 
-Application is deployed on heroku.com
+Application is deployed on heroku.com. Logs: heroku logs --app arti-stock-cheeki-breeki --tail
 
 Current use metrics:
  - check if current price is in 10% of the lowest close prices in last year
@@ -25,3 +25,5 @@ Current use metrics:
   - add more users
   - refactor
   - inform about the best sell time
+
+
