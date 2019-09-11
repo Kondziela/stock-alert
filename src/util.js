@@ -1,9 +1,9 @@
-var isInLow10Percent = (todayObject, allValues) => {
+var isInLowPercent = (todayObject, allValues, percent) => {
 		let index = allValues.findIndex((object) => object.date == todayObject.date);
 
 		console.log(index);
 
-		return (1 - (index/allValues.length)) < 0.3;
+		return (1 - (index/allValues.length)) < percent;
 	},
 	// 252 is max of range
 	oneYearAgo = () => {

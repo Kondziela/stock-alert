@@ -14,7 +14,7 @@ let processCompany = (company) => {
 
 					todaysValue = allValues[allValues.length - 1],
 
-					isLow = util.isInLow10Percent(todaysValue, allValues.sort(sorters.sortByClose));
+					isLow = util.isInLowPercent(todaysValue, allValues.sort(sorters.sortByClose), 0.4);
 
 				if (isLow) {
 					let measureMetric = metrics.generateSetMetrics(allValues, "close"),
