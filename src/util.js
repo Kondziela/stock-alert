@@ -12,5 +12,5 @@ var isInLowPercent = (todayObject, allValues, percent) => {
 		return date.toISOString().substring(0, 10);
 	}
 
-module.exports.isInLow10Percent = isInLow10Percent;
+module.exports.isInLowPercent = isInLowPercent;
 module.exports.oneYearAgo = oneYearAgo;

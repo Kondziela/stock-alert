@@ -25,10 +25,11 @@ let processCompany = (company) => {
 			});
 	},
 	mainProcess = () => {
-		let slackInitMessage = "Watching companies:\n\r" + companies.map(o => o.name).join(', ');
+		let slackInitMessage = "Watching companies:\n\r" + companies.map(o => o.name).join(', ') + "\n\rCompany with relative low yearly price:";
 		sendToSlack(slackInitMessage);
-		sendToSlack("Company with relative low yearly price:\n\r");
 		companies.forEach(processCompany);
 	}
+
+mainProcess();
 
 module.exports.mainProcess = mainProcess;
