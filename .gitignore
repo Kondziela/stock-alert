@@ -60,8 +60,5 @@ typings/
 # next.js build output
 .next
 
-# token
-token.js
-
 # pacage-lock.json
 package-lock.json
