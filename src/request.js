@@ -1,3 +1,8 @@
+/**
+ * API:
+ *  - Tiingo - API for american stock trade.
+ */
+
 var request = require('request-promise'),
 	token = require('../token.js').token;
 

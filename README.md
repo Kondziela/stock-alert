@@ -7,8 +7,6 @@ How to start:
 
 
  What left for working application:
-  - communication ot user via messanger
-  - scheduler
   - hosting
 
 

@@ -12,7 +12,9 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start-schedule": "node src/scheduler.js",
+    "start": "node src/main.js"
   },
   "repository": {
     "type": "git",

@@ -1,30 +1,34 @@
 var request = require('./request.js').requestToTiingo,
-	isInLow10Percent = require('./util.js').isInLow10Percent,
+	util = require('./util'),
 	sorters = require('./sorters'),
-	parser = require('./parser');
+	parser = require('./parser'),
+	metrics = require('./metrics'),
+	sendToSlack = require('./slack_sender').sendToSlack,
+	companies = require('./data/companies.js').companies;
 
-// 252 is max of range
-var days252Ago = () => {
-	let date = new Date();
-	date.setFullYear(date.getFullYear() - 1);
-	return date.toISOString().substring(0, 10);
-}
+let processCompany = (company) => {
 
-/**
- * List of watching companies.
- */
-var companies = ['amd'];
+		request(company.code, util.oneYearAgo())
+			.then((body) => {
+				let allValues = parser.parseTiingoResponse(body),
 
+					todaysValue = allValues[allValues.length - 1],
 
-request('amd', /*yearAgo()*/ '2019-09-02')
-	.then((body) => {
-		let allValues = parser.parseTiingoResponse(body);
+					isLow = util.isInLow10Percent(todaysValue, allValues.sort(sorters.sortByClose));
 
-		console.log(allValues[allValues.length - 1]);
-		console.log(allValues);
-		let isLow = isInLow10Percent(allValues[allValues.length - 1], allValues.sort(sorters.sortByClose));
-
-		console.log(isLow);
+				if (isLow) {
+					let measureMetric = metrics.generateSetMetrics(allValues, "close"),
+						slackString = company.name + ": current: " + todaysValue.close + ": min: " + measureMetric.min.close + ", max: " + measureMetric.max.close;
+						console.log(measureMetric);
+					sendToSlack(slackString);
+				}
+			});
+	},
+	mainProcess = () => {
+		let slackInitMessage = "Watching companies:\n\r" + companies.map(o => o.name).join(', ');
+		sendToSlack(slackInitMessage);
+		sendToSlack("Company with relative low yearly price:\n\r");
+		companies.forEach(processCompany);
 	}
-	);
 
+module.exports.mainProcess = mainProcess;
