@@ -1,18 +1,27 @@
 # stock-alert
+You'll never miss a market opportunity again!!
+Stock alert is comfortable tool which inform group of users about possible extra prices on stock trade.
+Raport about current situation is generated every night and sended to users. They can decide if alert is important for they or not.
 
 How to start:
  - add file token.js with your https://www.tiingo.com/ token in root path
  	module.exports = "YOUR TOKEN"
 
+Application is deployed on heroku.com
 
+Current use metrics:
+ - check if current price is in 10% of the lowest close prices in last year
 
- What left for working application:
-  - hosting
-
+ Future metrics:
+  - use of daily high, low and open prices
+  - check if application price is down
+  - short time price analyze (big fall)
+  - median analyze
+  - technical analyzes
 
  Possible development:
   - add another api
-  - add another commicator
   - add more companies
   - add more users
   - refactor
+  - inform about the best sell time
