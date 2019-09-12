@@ -7,8 +7,10 @@ var // 252 is max of range
 	},
 	findTodayObject = (allValues, date) => {
 		return allValues.reduce( (o1, o2) => o1.date == date ? o1 : o2 );
-	};
+	},
+	nearBy = (value1, value2) => (Math.abs(value1-value2) / (value1 < value2 ? value1 : value2)) < 0.1; 
 
 
 module.exports.oneYearAgo = oneYearAgo;
 module.exports.findTodayObject = findTodayObject;
+module.exports.nearBy = nearBy;

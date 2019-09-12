@@ -15,6 +15,7 @@ let processCompany = (company) => {
 
 					anaylyze = analyze_service.anaylzeCompany([...allValues], todaysValue);
 
+					console.log(`Result for company ${company.name}: `, anaylyze);
 				if (anaylyze.anyLow) {
 					sendToSlack(user_service.slackResponse(company, [...allValues], todaysValue));
 				}
