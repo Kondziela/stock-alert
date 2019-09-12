@@ -16,7 +16,7 @@ let checkIfAnyTrue = (result) => Object.keys(result).some( key => result[key]),
 	/**
 	 * Check if today was any specific candles.
 	 */
-	oneDayCandleEvent = (today) => metricsoneDayCandleEvent(today);
+	oneDayCandleEvent = (today) => metrics.oneDayCandleEvent(today);
 
 module.exports.anaylzeCompany = (allValues, todaysValue) => {
 
