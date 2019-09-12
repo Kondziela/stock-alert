@@ -1,6 +1,6 @@
 var schedule = require('node-schedule'),
 	main = require('./main'),
-	scheduleValue = '10 20 * * *';
+	scheduleValue = '0 15 20 * * *';
 
 let createSchedule = () => {
 	console.log("Start Scheduler with value: " + scheduleValue);
