@@ -26,4 +26,5 @@ Current use metrics:
   - refactor
   - inform about the best sell time
 
-
+Testing:
+ - install global library "junit"
