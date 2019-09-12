@@ -1,12 +1,12 @@
 var schedule = require('node-schedule'),
 	main = require('./main'),
-	scheduleValue = '0 15 20 * * *';
+	scheduleValue = '18 20 * * *';
 
 let createSchedule = () => {
 	console.log("Start Scheduler with value: " + scheduleValue);
 	 
 	// https://www.npmjs.com/package/node-schedule
-	var j = schedule.scheduleJob(scheduleValue, function(){
+	return schedule.scheduleJob(scheduleValue, function(){
 	  main.mainProcess();
 	});
 }
