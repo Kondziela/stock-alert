@@ -4,7 +4,7 @@
  */
 
 var request = require('request-promise'),
-	token = require('./token.js').token;
+	token = require('../data/token.js').token;
 
 
 var	BASE_URL = 'https://api.tiingo.com/tiingo/daily/',

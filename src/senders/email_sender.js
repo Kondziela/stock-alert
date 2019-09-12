@@ -3,8 +3,8 @@
   * Class is not used
  */
 var nodemailer = require('nodemailer'),
-    user = require('./token.js').email_user,
-    password = require('./token.js').email_password;
+    user = require('../data/token.js').email_user,
+    password = require('../data/token.js').email_password;
 
 console.log(user, password);
 

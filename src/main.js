@@ -1,9 +1,9 @@
-var request = require('./request.js').requestToTiingo,
-	util = require('./util'),
-	sorters = require('./sorters'),
-	parser = require('./parser'),
-	metrics = require('./metrics'),
-	sendToSlack = require('./slack_sender').sendToSlack,
+var request = require('./senders/request.js').requestToTiingo,
+	util = require('./utils/util'),
+	sorters = require('./utils/sorters'),
+	parser = require('./utils/parser'),
+	metrics = require('./utils/metrics'),
+	sendToSlack = require('./senders/slack_sender').sendToSlack,
 	companies = require('./data/companies.js').companies;
 
 let processCompany = (company) => {

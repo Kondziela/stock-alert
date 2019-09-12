@@ -9,3 +9,5 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 // Scheduler for bot
 let scheduler = require('./src/scheduler').createSchedule();
+
+console.log(scheduler);
