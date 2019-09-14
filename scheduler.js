@@ -1,5 +1,5 @@
 var cron = require('node-cron'),
-	main = require('./main');
+	main = require('./src/main');
 
 
 // let createSchedule = () => {
