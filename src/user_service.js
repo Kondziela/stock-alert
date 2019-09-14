@@ -19,3 +19,11 @@ module.exports.slackResponse = (company, allValues, todaysValue, anaylyze) => {
 
 	return slackString;
 }
+
+module.exports.initMessage = (companies) => "Watching companies:\n\r" + companies.map(o => o.name).join(', ') + "\n\rCompany with relative low yearly price:";
+
+module.exports.legend = () => 
+	"Legend:\n\r" +
+	" - :arrow_down: - in low percent of yearly median\n\r" + 
+	" - :chart: - bottom intersetion of mean\n\r" + 
+	" - :candle: - unique candle event";
