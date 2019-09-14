@@ -33,12 +33,21 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 			minMax = Math.abs(low - high);
 
 		if ((openClose/minMax) < 0.25) {
-			return nearBy(open, low) || nearBy(open, high) || nearBy(close, low) || nearBy(close, high);
+			return (nearBy(open, low) && !nearBy(open, high)) || (nearBy(close, low) && !nearBy(close, high)) // upper candle
+				|| (!nearBy(open, low) && nearBy(open, high)) || (!nearBy(close, low) && nearBy(close, high));// uppster candle
 		}
 		return false;
-	}
+	},
+	volumeIncrease = (allValues, ratio) => {
+		allValues.sort(sorters.sortByDateAsc);
+		let today = allValues[0],
+			yesterday = allValues[1];
+
+		return today.volume > yesterday.volume * ratio;
+	};
 
 module.exports.generateSetMetrics = generateSetMetrics;
 module.exports.medianLowPercent = medianLowPercent;
 module.exports.bottomIntersectionOfMean = bottomIntersectionOfMean;
 module.exports.oneDayCandleEvent = oneDayCandleEvent;
+module.exports.volumeIncrease = volumeIncrease;

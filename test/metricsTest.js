@@ -101,4 +101,117 @@ module.exports = it => {
         it.eq(result, false);
     })
 
+    it("downster candle", () => {
+        let input = {
+            open: 10, 
+            close: 10.5, 
+            low: 5, 
+            high: 11
+        };
+
+         let result = metrics.oneDayCandleEvent(input);
+
+         it.eq(result, true);   
+    })
+
+    it("downster candle", () => {
+        let input = {
+            open: 10, 
+            close: 10.5, 
+            low: 9.5, 
+            high: 15
+        };
+
+         let result = metrics.oneDayCandleEvent(input);
+
+         it.eq(result, true);   
+    })
+
+    it("candle doesn't exist, too small wings", () => {
+        let input = {
+            open: 10, 
+            close: 12, 
+            low: 9, 
+            high: 16
+        };
+
+         let result = metrics.oneDayCandleEvent(input);
+
+         it.eq(result, false);   
+    })
+
+    it("candle doesn't exist, wings too far", () => {
+        let input = {
+            open: 10, 
+            close: 11, 
+            low: 5, 
+            high: 16
+        };
+
+         let result = metrics.oneDayCandleEvent(input);
+
+         it.eq(result, false);   
+    })
+
+    it("candle doesn't exist, wings too near", () => {
+        let input = {
+            open: 10, 
+            close: 11, 
+            low: 9.5, 
+            high: 11.5
+        };
+
+         let result = metrics.oneDayCandleEvent(input);
+
+         it.eq(result, false);   
+    })
+
+    it("volume increases", () => {
+        let today = {
+                volume: 100,
+                date: new Date('2019-10-10') 
+            },
+            yesterday = {
+                volume: 10,
+                date: new Date('2019-10-9')
+            },
+            arr = [yesterday, today];
+
+        let result = metrics.volumeIncrease(arr, 2);
+
+        it.eq(result, true);
+    })
+
+    it("volume increases not enought", () => {
+        let today = {
+                volume: 100,
+                date: new Date('2019-10-10') 
+            },
+            yesterday = {
+                volume: 60,
+                date: new Date('2019-10-9')
+            },
+            arr = [yesterday, today];
+
+        let result = metrics.volumeIncrease(arr, 2);
+
+        it.eq(result, false);
+    })
+
+    it("volume doesn't increases", () => {
+        let today = {
+                volume: 100,
+                date: new Date('2019-10-10') 
+            },
+            yesterday = {
+                volume: 150,
+                date: new Date('2019-10-9')
+            },
+            arr = [yesterday, today];
+
+        let result = metrics.volumeIncrease(arr, 2);
+
+        it.eq(result, false);
+    })
+
 };

@@ -17,14 +17,15 @@ let processCompany = (company) => {
 
 					console.log(`Result for company ${company.name}: `, anaylyze);
 				if (anaylyze.anyLow) {
-					sendToSlack(user_service.slackResponse(company, [...allValues], todaysValue));
+					sendToSlack(user_service.slackResponse(company, [...allValues], todaysValue, anaylyze));
 				}
 			});
 	},
 
 	mainProcess = () => {
-		let slackInitMessage = "Watching companies:\n\r" + companies.map(o => o.name).join(', ') + "\n\rCompany with relative low yearly price:";
-		sendToSlack(slackInitMessage);
+		sendToSlack(user_service.initMessage(companies));
+		sendToSlack(user_service.legend());
+
 		companies.forEach(processCompany);
 	}
 
