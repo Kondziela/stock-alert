@@ -33,7 +33,8 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 			minMax = Math.abs(low - high);
 
 		if ((openClose/minMax) < 0.25) {
-			return nearBy(open, low) || nearBy(open, high) || nearBy(close, low) || nearBy(close, high);
+			return (nearBy(open, low) && !nearBy(open, high)) || (nearBy(close, low) && !nearBy(close, high)) // upper candle
+				|| (!nearBy(open, low) && nearBy(open, high)) || (!nearBy(close, low) && nearBy(close, high));// uppster candle
 		}
 		return false;
 	};
