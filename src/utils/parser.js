@@ -4,7 +4,8 @@ var parseTiingoResponse = (body) =>
 		'close': object.close,
 		'high': object.high,
 		'low': object.low,
-		'open': object.open
+		'open': object.open,
+		'volume': object.volume
 	}});
 
 module.exports.parseTiingoResponse = parseTiingoResponse;
