@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "express": "^4.17.1",
+    "junit": "^1.4.9",
     "node-cron": "^2.0.3",
     "nodemailer": "^6.3.0",
     "request": "^2.88.0",
@@ -13,7 +14,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "test",
+    "test": "junit test/*.js",
     "start": "node index.js",
     "start-once": "node src/main.js"
   },
