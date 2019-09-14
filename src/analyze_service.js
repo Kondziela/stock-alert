@@ -3,7 +3,8 @@ var util = require('./utils/util'),
 
 const 	MEDIAN_PERCENT = 0.4,
 		AVERAGE_DAYS = 14,
-		VOLUME_INCREASE_RATIO = 2;
+		VOLUME_INCREASE_RATIO = 2,
+		DAILY_CHANGE_RATIO = 0.05;
 
 let checkIfAnyTrue = (result) => Object.keys(result).some( key => result[key]),
 	/**
@@ -21,7 +22,15 @@ let checkIfAnyTrue = (result) => Object.keys(result).some( key => result[key]),
 	/**
 	 * Check if volument increases today.
 	 */
-	volumeIncrease = (allValues) => metrics.volumeIncrease(allValues, VOLUME_INCREASE_RATIO); 
+	volumeIncrease = (allValues) => metrics.volumeIncrease(allValues, VOLUME_INCREASE_RATIO),
+	/**
+	 * Check if today was big price raise.
+	 */
+	dailyRaise = (today) => metrics.dailyRaise(today, DAILY_CHANGE_RATIO),
+	/**
+	 * Check if today was big price fall.
+	 */
+	dailyFall = (today) => metrics.dailyFall(today, DAILY_CHANGE_RATIO);
 
 module.exports.anaylzeCompany = (allValues, todaysValue) => {
 
@@ -29,7 +38,9 @@ module.exports.anaylzeCompany = (allValues, todaysValue) => {
 			medianLowPercent: medianLowPercent(todaysValue, allValues),
 			bottomIntersectionOfMean: bottomIntersectionOfMean(allValues),
 			oneDayCandleEvent: oneDayCandleEvent(todaysValue),
-			volumeIncrease: volumeIncrease(allValues)
+			volumeIncrease: volumeIncrease(allValues),
+			dailyRaise: dailyRaise(todaysValue),
+			dailyFall: dailyFall(todaysValue)
 		};
 
 

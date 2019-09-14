@@ -214,4 +214,48 @@ module.exports = it => {
         it.eq(result, false);
     })
 
+    it("daily increase by ratio", () => {
+        let today = {
+            open: 10,
+            close: 15
+        }
+
+        let result = metrics.dailyRaise(today, 0.05);
+
+        it.eq(result, true);
+    })
+
+    it("daily NOT increase by ratio", () => {
+        let today = {
+            open: 10,
+            close: 11
+        }
+
+        let result = metrics.dailyRaise(today, 0.2);
+
+        it.eq(result, false);
+    })
+
+    it("daily fall by ratio", () => {
+        let today = {
+            open: 15,
+            close: 10
+        }
+
+        let result = metrics.dailyFall(today, 0.05);
+
+        it.eq(result, true);
+    })
+
+    it("daily NOT fall by ratio", () => {
+        let today = {
+            open: 11,
+            close: 10
+        }
+
+        let result = metrics.dailyFall(today, 0.2);
+
+        it.eq(result, false);
+    })
+
 };

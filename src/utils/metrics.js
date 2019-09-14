@@ -44,10 +44,14 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 			yesterday = allValues[1];
 
 		return today.volume > yesterday.volume * ratio;
-	};
+	},
+	dailyRaise = (today, ratio) => today.close > (today.open + (today.open * ratio)),
+	dailyFall = (today, ratio) => today.close < (today.open - (today.open * ratio));
 
 module.exports.generateSetMetrics = generateSetMetrics;
 module.exports.medianLowPercent = medianLowPercent;
 module.exports.bottomIntersectionOfMean = bottomIntersectionOfMean;
 module.exports.oneDayCandleEvent = oneDayCandleEvent;
 module.exports.volumeIncrease = volumeIncrease;
+module.exports.dailyRaise = dailyRaise;
+module.exports.dailyFall = dailyFall;
