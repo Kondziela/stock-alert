@@ -2,7 +2,8 @@ var util = require('./utils/util'),
 	metrics = require('./utils/metrics');
 
 const 	MEDIAN_PERCENT = 0.4,
-		AVERAGE_DAYS = 14;
+		AVERAGE_DAYS = 14,
+		VOLUME_INCREASE_RATIO = 2;
 
 let checkIfAnyTrue = (result) => Object.keys(result).some( key => result[key]),
 	/**
@@ -12,18 +13,23 @@ let checkIfAnyTrue = (result) => Object.keys(result).some( key => result[key]),
 	/**
 	 * Check if today was bottom intersection of mean. If yesterday value was under average value and today is upper then true.
 	 */
-	bottomIntersectionOfMean = (allValues) => metrics.bottomIntersectionOfMean(allValues, AVERAGE_DAYS);
+	bottomIntersectionOfMean = (allValues) => metrics.bottomIntersectionOfMean(allValues, AVERAGE_DAYS),
 	/**
 	 * Check if today was any specific candles.
 	 */
-	oneDayCandleEvent = (today) => metrics.oneDayCandleEvent(today);
+	oneDayCandleEvent = (today) => metrics.oneDayCandleEvent(today),
+	/**
+	 * Check if volument increases today.
+	 */
+	volumeIncrease = (allValues) => metrics.volumeIncrease(allValues, VOLUME_INCREASE_RATIO); 
 
 module.exports.anaylzeCompany = (allValues, todaysValue) => {
 
 	let result =  {
 			medianLowPercent: medianLowPercent(todaysValue, allValues),
 			bottomIntersectionOfMean: bottomIntersectionOfMean(allValues),
-			oneDayCandleEvent: oneDayCandleEvent(todaysValue)
+			oneDayCandleEvent: oneDayCandleEvent(todaysValue),
+			volumeIncrease: volumeIncrease(allValues)
 		};
 
 

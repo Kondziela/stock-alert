@@ -166,4 +166,52 @@ module.exports = it => {
          it.eq(result, false);   
     })
 
+    it("volume increases", () => {
+        let today = {
+                volume: 100,
+                date: new Date('2019-10-10') 
+            },
+            yesterday = {
+                volume: 10,
+                date: new Date('2019-10-9')
+            },
+            arr = [yesterday, today];
+
+        let result = metrics.volumeIncrease(arr, 2);
+
+        it.eq(result, true);
+    })
+
+    it("volume increases not enought", () => {
+        let today = {
+                volume: 100,
+                date: new Date('2019-10-10') 
+            },
+            yesterday = {
+                volume: 60,
+                date: new Date('2019-10-9')
+            },
+            arr = [yesterday, today];
+
+        let result = metrics.volumeIncrease(arr, 2);
+
+        it.eq(result, false);
+    })
+
+    it("volume doesn't increases", () => {
+        let today = {
+                volume: 100,
+                date: new Date('2019-10-10') 
+            },
+            yesterday = {
+                volume: 150,
+                date: new Date('2019-10-9')
+            },
+            arr = [yesterday, today];
+
+        let result = metrics.volumeIncrease(arr, 2);
+
+        it.eq(result, false);
+    })
+
 };
