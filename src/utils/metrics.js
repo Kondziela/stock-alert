@@ -46,7 +46,6 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 		return today.volume > yesterday.volume * ratio;
 	};
 
-
 module.exports.generateSetMetrics = generateSetMetrics;
 module.exports.medianLowPercent = medianLowPercent;
 module.exports.bottomIntersectionOfMean = bottomIntersectionOfMean;
