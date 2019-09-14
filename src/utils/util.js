@@ -1,4 +1,4 @@
-var // 252 is max of range
+ var // 252 is max of range
 	oneYearAgo = () => {
 		let date = new Date();
 		date.setFullYear(date.getFullYear() - 1);

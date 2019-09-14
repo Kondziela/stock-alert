@@ -36,8 +36,7 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 			return nearBy(open, low) || nearBy(open, high) || nearBy(close, low) || nearBy(close, high);
 		}
 		return false;
-	};
-
+	}
 
 module.exports.generateSetMetrics = generateSetMetrics;
 module.exports.medianLowPercent = medianLowPercent;

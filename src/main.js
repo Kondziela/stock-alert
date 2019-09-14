@@ -28,6 +28,4 @@ let processCompany = (company) => {
 		companies.forEach(processCompany);
 	}
 
-mainProcess();
-
 module.exports.mainProcess = mainProcess;
