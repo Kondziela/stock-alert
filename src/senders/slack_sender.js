@@ -10,7 +10,7 @@ let sendToSlack = (message) => {
 	  username: "Cheeki Breeki",
 	  text: message
 	}, function(err, response) {
-	  console.log(response);
+	  console.log("Send message to Slack");
 	});
 } 
 

@@ -23,8 +23,9 @@ let processCompany = (company) => {
 	},
 
 	mainProcess = () => {
-		sendToSlack(user_service.initMessage(companies));
+		sendToSlack(user_service.watchingCompanies(companies));
 		sendToSlack(user_service.legend());
+		sendToSlack(user_service.analyzePrefix());
 
 		companies.forEach(processCompany);
 	}
