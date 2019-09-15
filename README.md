@@ -12,14 +12,16 @@ Stock-alert is fully open to cooperate with functional and technical specialists
  4. considerable increase in volume
  5. considerable increase in price
  6. considerable decrease in price
+ 7. hole on chart between yesterdays close and todays open
  
 ## Values for metrics
- 1. is in low 40 % of day median
+ 1. is in low 33 % of days median
  2. 14 days mean
  3. -
  4. twice bigger volume
  5. increase of 5 %
  6. decrease of 5 %
+ 7. change by 1%
  
 ## Current monitored companies:
  - AMD
