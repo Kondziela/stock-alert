@@ -1,10 +1,11 @@
 var util = require('./utils/util'),
 	metrics = require('./utils/metrics');
 
-const 	MEDIAN_PERCENT = 0.4,
+const 	MEDIAN_PERCENT = 0.33,
 		AVERAGE_DAYS = 14,
 		VOLUME_INCREASE_RATIO = 2,
-		DAILY_CHANGE_RATIO = 0.05;
+		DAILY_CHANGE_RATIO = 0.05,
+		HOLE_CHANGE = 0.01;
 
 let checkIfAnyTrue = (result) => Object.keys(result).some( key => result[key]),
 	/**
@@ -30,7 +31,11 @@ let checkIfAnyTrue = (result) => Object.keys(result).some( key => result[key]),
 	/**
 	 * Check if today was big price fall.
 	 */
-	dailyFall = (today) => metrics.dailyFall(today, DAILY_CHANGE_RATIO);
+	dailyFall = (today) => metrics.dailyFall(today, DAILY_CHANGE_RATIO),
+	/**
+	 * Check if between today and yesterday was hole on chart.
+	 */
+	holeInChart = (allValues) => metrics.holeInChart(allValues, HOLE_CHANGE);
 
 module.exports.anaylzeCompany = (allValues, todaysValue) => {
 
@@ -40,7 +45,8 @@ module.exports.anaylzeCompany = (allValues, todaysValue) => {
 			oneDayCandleEvent: oneDayCandleEvent(todaysValue),
 			volumeIncrease: volumeIncrease(allValues),
 			dailyRaise: dailyRaise(todaysValue),
-			dailyFall: dailyFall(todaysValue)
+			dailyFall: dailyFall(todaysValue),
+			holeInChart: holeInChart(allValues)
 		};
 
 

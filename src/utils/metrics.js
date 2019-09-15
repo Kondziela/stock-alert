@@ -46,7 +46,14 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 		return today.volume > yesterday.volume * ratio;
 	},
 	dailyRaise = (today, ratio) => today.close > (today.open + (today.open * ratio)),
-	dailyFall = (today, ratio) => today.close < (today.open - (today.open * ratio));
+	dailyFall = (today, ratio) => today.close < (today.open - (today.open * ratio)),
+	holeInChart = (allValues, ratio) => {
+		allValues.sort(sorters.sortByDateAsc);
+		let todaysOpen = allValues[0].open,
+			yesterdayClose = allValues[1].close;
+
+		return todaysOpen > (1 + ratio) * yesterdayClose || todaysOpen < (1 - ratio) * yesterdayClose;
+	}
 
 module.exports.generateSetMetrics = generateSetMetrics;
 module.exports.medianLowPercent = medianLowPercent;
@@ -55,3 +62,4 @@ module.exports.oneDayCandleEvent = oneDayCandleEvent;
 module.exports.volumeIncrease = volumeIncrease;
 module.exports.dailyRaise = dailyRaise;
 module.exports.dailyFall = dailyFall;
+module.exports.holeInChart = holeInChart;
