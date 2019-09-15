@@ -23,6 +23,9 @@ module.exports.slackResponse = (company, allValues, todaysValue, anaylyze) => {
 	if (anaylyze.dailyFall) {
 		slackString += " :arrow_down_small:"
 	}
+	if (anaylyze.holeInChart) {
+		slackString += " :hole:"
+	}
 
 	console.log(`Found metrics for company ${company.name} ${measureMetric}`);
 
@@ -38,4 +41,5 @@ module.exports.legend = () =>
 	" - :candle: - unique candle event\n\r" +
 	" - :man-boy-boy: - volume increase\n\r" +
 	" - :arrow_up: - big price raise\n\r" +
-	" - :arrow_down_small: - big price fall";
+	" - :arrow_down_small: - big price fall\n\r" +
+	" - :hole: - hole on chart";

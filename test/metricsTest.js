@@ -258,4 +258,36 @@ module.exports = it => {
         it.eq(result, false);
     })
 
+    it("hole exists", () => {
+        let today = {
+                date: new Date('2019-09-09'),
+                open: 11
+            },
+            yesterday = {
+                date: new Date('2019-09-08'),
+                close: 10
+            },
+            arr = [today, yesterday];
+
+        let result = metrics.holeInChart(arr, 0.01);
+
+        it.eq(result, true);
+    })
+
+    it("hole NOT exists", () => {
+        let today = {
+                date: new Date('2019-09-09'),
+                open: 11
+            },
+            yesterday = {
+                date: new Date('2019-09-08'),
+                close: 10
+            },
+            arr = [today, yesterday];
+
+        let result = metrics.holeInChart(arr, 0.2);
+
+        it.eq(result, false);
+    })
+
 };
