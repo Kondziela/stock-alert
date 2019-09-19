@@ -1,9 +1,8 @@
-var Slack = require('slack-node'),
-	slack_webhooks = require('../data/token').slack_webhooks;
+var Slack = require('slack-node');
  
 let sendToSlack = (message) => {
 	let slack = new Slack();
-	slack.setWebhook(slack_webhooks);
+	slack.setWebhook(process.env.slack_webhooks);
 	 
 	slack.webhook({
 	  channel: "#make-money-stay-cheeki-breeki",
