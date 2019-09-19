@@ -23,6 +23,9 @@ Stock-alert is fully open to cooperate with functional and technical specialists
  6. decrease of 5 %
  7. change by 1%
  
+## Price prediction
+For companies which are sent to Slack,  tomorrow price is counted with use polynomial regression. Degree values from the set [1 .. 10] are measured for data from last year. The best result is used for prediction for tomorrow.
+ 
 ## Current monitored companies:
  - AMD
  - Microsoft
