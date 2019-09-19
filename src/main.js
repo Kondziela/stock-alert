@@ -6,7 +6,8 @@ var request = require('./senders/request.js'),
 	parser = require('./utils/parser'),
 	sorters = require('./utils/sorters'),
 	analyze_service = require('./analyze_service'),
-	user_service = require('./user_service');
+	user_service = require('./user_service'),
+	predict_service = require('./predict_service');
 
 let countMetrics = (company, allValues) => {
 		allValues.sort(sorters.sortByDateAsc);
@@ -16,8 +17,20 @@ let countMetrics = (company, allValues) => {
 
 			console.log(`Result for company ${company.name}: `, anaylyze);
 		if (anaylyze.anyLow) {
-			sendToSlack(user_service.slackResponse(company, [...allValues], todaysValue, anaylyze));
+			let prediction = predictPrice(company, allValues);
+			sendToSlack(
+				user_service.slackMetricsResponse(company, [...allValues], todaysValue, anaylyze, prediction)
+			);
 		}
+	},
+	predictPrice = (company, allValues) => {
+		allValues.sort(sorters.sortByDateAsc);
+
+		let prediction = predict_service.predictPrice(allValues);
+
+		return prediction;
+		// sendToSlack(user_service.slackPredictionResponse(company, prediction));
+
 	},
 	processCompany = (company, requestFn, parsFn) => {
 
