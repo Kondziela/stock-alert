@@ -16,7 +16,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "junit test/*.js",
-    "start": "node scheduler.js",
+    "start": "node index.js",
     "start-once": "node src/main.js"
   },
   "repository": {
