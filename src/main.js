@@ -1,4 +1,4 @@
-var request = require('./senders/request.js').requestToTiingo,
+var request = require('./senders/request.js'),
 	sendToSlack = require('./senders/slack_sender').sendToSlack,
 	companies = require('./data/companies.js').companies,
 	util = require('./utils/util'),
@@ -8,7 +8,7 @@ var request = require('./senders/request.js').requestToTiingo,
 
 let processCompany = (company) => {
 
-		request(company.code, util.oneYearAgo())
+		request.requestToTiingo(company.code, util.oneYearAgo())
 			.then((body) => {
 				let allValues = parser.parseTiingoResponse(body),
 					todaysValue = allValues[allValues.length - 1];
@@ -28,6 +28,10 @@ let processCompany = (company) => {
 		sendToSlack(user_service.analyzePrefix());
 
 		companies.forEach(processCompany);
+		// request.requestGermanStock();
+			// .then(body => {
+			// 	console.log(body)
+			// });
 	}
 
 module.exports.mainProcess = mainProcess;
