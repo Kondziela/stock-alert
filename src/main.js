@@ -1,37 +1,39 @@
 var request = require('./senders/request.js'),
 	sendToSlack = require('./senders/slack_sender').sendToSlack,
-	companies = require('./data/companies.js').companies,
+	companiesUSA = require('./data/companiesUSA.js').companies,
+	companiesGermany = require('./data/companiesGermany.js').companies,
 	util = require('./utils/util'),
 	parser = require('./utils/parser'),
+	sorters = require('./utils/sorters'),
 	analyze_service = require('./analyze_service'),
 	user_service = require('./user_service');
 
-let processCompany = (company) => {
+let countMetrics = (company, allValues) => {
+		allValues.sort(sorters.sortByDateAsc);
 
-		request.requestToTiingo(company.code, util.oneYearAgo())
+		let todaysValue = allValues[allValues.length - 1],
+			anaylyze = analyze_service.anaylzeCompany([...allValues], todaysValue);
+
+			console.log(`Result for company ${company.name}: `, anaylyze);
+		if (anaylyze.anyLow) {
+			sendToSlack(user_service.slackResponse(company, [...allValues], todaysValue, anaylyze));
+		}
+	},
+	processCompany = (company, requestFn, parsFn) => {
+
+		requestFn.call(this, company.code, util.oneYearAgo())
 			.then((body) => {
-				let allValues = parser.parseTiingoResponse(body),
-					todaysValue = allValues[allValues.length - 1];
-
-					anaylyze = analyze_service.anaylzeCompany([...allValues], todaysValue);
-
-					console.log(`Result for company ${company.name}: `, anaylyze);
-				if (anaylyze.anyLow) {
-					sendToSlack(user_service.slackResponse(company, [...allValues], todaysValue, anaylyze));
-				}
+				countMetrics(company, parsFn.call(this, body));
 			});
 	},
 
 	mainProcess = () => {
-		sendToSlack(user_service.watchingCompanies(companies));
+		sendToSlack(user_service.watchingCompanies(companiesUSA.concat(companiesGermany)));
 		sendToSlack(user_service.legend());
 		sendToSlack(user_service.analyzePrefix());
 
-		companies.forEach(processCompany);
-		// request.requestGermanStock();
-			// .then(body => {
-			// 	console.log(body)
-			// });
+		companiesUSA.forEach(company => processCompany(company, request.requestForUSAStock, parser.parseTiingoResponse));
+		// companiesGermany.forEach(company => processCompany(company, request.requestForGermanStock, parser.parseQuandlResponse));
 	}
 
 module.exports.mainProcess = mainProcess;

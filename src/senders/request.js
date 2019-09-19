@@ -1,7 +1,7 @@
 /**
  * API:
  *  - Tiingo - API for american stock trade.
- *  - Quandl - API for german stock tradehttps://www.quandl.com/data/FSE-Frankfurt-Stock-Exchange/usage/quickstart/api
+ *  - Quandl - API for german stock trade https://www.quandl.com/data/FSE-Frankfurt-Stock-Exchange/usage/quickstart/api
  *
  * Possible API:
  *  - Deautsche Boese
@@ -19,40 +19,26 @@ var	BASE_URL = 'https://api.tiingo.com/tiingo/daily/',
             }
         },
 
-    requestToTiingo = (company, startDate, endDate) => {
+    requestForUSAStock = (company, startDate) => {
     	if (!company || !startDate) {
     		console.log("Company: " + company);
     		console.log("Start date: " + startDate);
     		throw new Error("Missing param");
     	}
-    	let url = BASE_URL + company + '/prices?startDate=' + startDate + (endDate ? '&endDate=' + endDate : '');
+    	let url = BASE_URL + company + '/prices?startDate=' + startDate;
     	requestOptions.url = url; 
     	return request(requestOptions);
     },
 
-    requestGermanStock = () => {
+    requestForGermanStock = (company, startDate) => {
         var options = {
           method: 'GET',
-          url: 'https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-historical-data',
-          qs: {
-            frequency: '1d',
-            filter: 'history',
-            period1: '1546448400',
-            period2: '1562086800',
-            symbol: 'BMW.DE'
-          },
-          headers: {
-            'x-rapidapi-host': 'apidojo-yahoo-finance-v1.p.rapidapi.com',
-            'x-rapidapi-key': process.env.german_token
-          }
+          url: `https://www.quandl.com/api/v3/datasets/FSE/${company}?start_date=${startDate}&api_key=${process.env.german_token}`
         };
 
-        request(options, function (error, response, body) {
-            if (error) throw new Error(error);
-
-            console.log(body);
-        });
+        console.log(`Request for german stock: ${options.url}`);
+        return request(options);
     }
 
-module.exports.requestToTiingo = requestToTiingo;
-module.exports.requestGermanStock = requestGermanStock;
+module.exports.requestForUSAStock = requestForUSAStock;
+module.exports.requestForGermanStock = requestForGermanStock;

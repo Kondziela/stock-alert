@@ -54,5 +54,9 @@ module.exports.companies = [
 	{
 		code: 'DELL',
 		name: 'Dell'
+	},
+	{
+		code: 'NKE',
+		name: 'Nike'
 	}
 ]
