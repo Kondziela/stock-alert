@@ -27,8 +27,8 @@ let processCompany = (company) => {
 		// sendToSlack(user_service.legend());
 		// sendToSlack(user_service.analyzePrefix());
 
-		// companies.forEach(processCompany);
-		request.requestGermanStock();
+		companies.forEach(processCompany);
+		// request.requestGermanStock();
 			// .then(body => {
 			// 	console.log(body)
 			// });
