@@ -1,8 +1,9 @@
 const 	request = require('../senders/request'),
 		parser = require('../utils/parser'),
-		fs = require('fs');
+		fs = require('fs'),
+		tokens = require('../data/tokens');
 
-process.env.tiingi_token = '91a345dff31524acd5a8097bfe840823208b9de7';
+process.env.tiingi_token = tokens.tiingi_token;
 
 let downloadUSAData = (companyCode, startDate, fileName) => {
 	let filePath = `../data/data_science/${fileName}.json`;
