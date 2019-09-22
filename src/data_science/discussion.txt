@@ -1,0 +1,29 @@
+Stock Trade model
+Potential prediction model could analyze all historical data and learn predict one of potential outputs.
+
+
+	Inputs:
+		- date:
+			- year
+			- months
+			- day
+		- company industry
+		- country
+		- last results:
+			- prices:
+				- open
+				- close
+				- max
+				- min
+			- volume
+		- technical metrics ? (maybe they are inside results)
+		- buy / sell signals
+
+	Outputs:
+		- prices:
+			- open
+			- close
+			- max
+			- min
+		- raise / fall
+		- buy / sell signal
