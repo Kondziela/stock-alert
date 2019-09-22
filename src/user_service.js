@@ -3,9 +3,16 @@ var metrics = require('./utils/metrics'),
 
 module.exports.slackMetricsResponse = (company, allValues, todaysValue, anaylyze, prediction) => {
 	let measureMetric = metrics.generateSetMetrics(allValues, "close"),
-		slackString = company.name + ": current: " + todaysValue.close + ": min: " + measureMetric.min.close + ", max: " + measureMetric.max.close;
+		slackString = `${company.name}: current: ${todaysValue.close}, min: ${measureMetric.min.close}, max: ${measureMetric.max.close}`,
+		predict = prediction.regression.toFixed(2);
 		
-	slackString += " pred: " + prediction.regression.toFixed(2);
+	slackString += " pred: " + predict;
+
+	if (predict < todaysValue.close) {
+		slackString += ' :red_circle:'
+	} else {
+		slackString += ' :green_heart:'
+	}
 
 	if (anaylyze.medianLowPercent) {
 		slackString += " :moneybag:";
@@ -46,4 +53,5 @@ module.exports.legend = () =>
 	" - :man-boy-boy: - volume increase\n\r" +
 	" - :arrow_up: - big price raise\n\r" +
 	" - :arrow_down_small: - big price fall\n\r" +
-	" - :hole: - hole on chart";
+	" - :hole: - hole on chart\n\r" +
+	" - :green_heart:/:red_circle: - probably raise/fall";

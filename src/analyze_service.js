@@ -5,7 +5,7 @@ const 	MEDIAN_PERCENT = 0.33,
 		AVERAGE_DAYS = 14,
 		VOLUME_INCREASE_RATIO = 2,
 		DAILY_CHANGE_RATIO = 0.05,
-		HOLE_CHANGE = 0.01;
+		HOLE_CHANGE = 0.03;
 
 let checkIfAnyTrue = (result) => Object.keys(result).some( key => result[key]),
 	/**
