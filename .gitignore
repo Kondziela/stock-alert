@@ -64,4 +64,4 @@ typings/
 package-lock.json
 
 # tokens
-token.js
+tokens.js

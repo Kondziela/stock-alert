@@ -1,10 +1,12 @@
 var metrics = require('./utils/metrics'),
 	util = require('./utils/util');
 
-module.exports.slackResponse = (company, allValues, todaysValue, anaylyze) => {
+module.exports.slackMetricsResponse = (company, allValues, todaysValue, anaylyze, prediction) => {
 	let measureMetric = metrics.generateSetMetrics(allValues, "close"),
 		slackString = company.name + ": current: " + todaysValue.close + ": min: " + measureMetric.min.close + ", max: " + measureMetric.max.close;
 		
+	slackString += " pred: " + prediction.regression.toFixed(2);
+
 	if (anaylyze.medianLowPercent) {
 		slackString += " :moneybag:";
 	}
@@ -31,6 +33,8 @@ module.exports.slackResponse = (company, allValues, todaysValue, anaylyze) => {
 
 	return slackString;
 }
+
+module.exports.slackPredictionResponse = (company, prediction) => `Tomorrow price prediction:\n\r regression: ${prediction.regression}`;
 
 module.exports.watchingCompanies = (companies) => "Watching companies:\n\r" + companies.map(o => o.name).join(', ');
 module.exports.analyzePrefix = () => "Company with relative low yearly price:";
