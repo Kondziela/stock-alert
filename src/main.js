@@ -46,7 +46,7 @@ let countMetrics = (company, allValues) => {
 		sendToSlack(user_service.analyzePrefix());
 
 		companiesUSA.forEach(company => processCompany(company, request.requestForUSAStock, parser.parseTiingoResponse));
-		// companiesGermany.forEach(company => processCompany(company, request.requestForGermanStock, parser.parseQuandlResponse));
+		companiesGermany.forEach(company => processCompany(company, request.requestForGermanStock, parser.parseQuandlResponse));
 	}
 
 module.exports.mainProcess = mainProcess;
