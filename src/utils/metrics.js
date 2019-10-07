@@ -49,8 +49,8 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 	dailyFall = (today, ratio) => today.close < (today.open - (today.open * ratio)),
 	holeInChart = (allValues, ratio) => {
 		allValues.sort(sorters.sortByDateAsc);
-		let todaysOpen = allValues[0].open,
-			yesterdayClose = allValues[1].close;
+		let todaysOpen = allValues[allValues.length - 1].open,
+			yesterdayClose = allValues[allValues.length - 2].close;
 
 		return todaysOpen > (1 + ratio) * yesterdayClose || todaysOpen < (1 - ratio) * yesterdayClose;
 	}
