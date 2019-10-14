@@ -94,7 +94,7 @@ model.add(tf.layers.dense({
 model.compile({
   loss: 'meanSquaredError',
   optimizer: 'sgd',
-  metrics: ['MAE']
+  metrics: ['MAE', 'accuracy']
 });
 
 let allData  = loadData('amd'),
