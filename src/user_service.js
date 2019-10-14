@@ -17,7 +17,7 @@ module.exports.slackMetricsResponse = (company, allValues, todaysValue, anaylyze
 	if (anaylyze.medianLowPercent) {
 		slackString += " :moneybag:";
 	}
-	if (anaylyze.bottomIntersectionOfMean) {
+	if (anaylyze.bottomIntersectionOfMean || anaylyze.bottomIntersectionOfMean5And20 || anaylyze.bottomIntersectionOfMean50And200) {
 		slackString += " :chart_with_upwards_trend:";
 	}
 	if (anaylyze.oneDayCandleEvent) {
@@ -48,7 +48,7 @@ module.exports.analyzePrefix = () => "Company with relative low yearly price:";
 module.exports.legend = () => 
 	"Legend:\n\r" +
 	" - :moneybag: - in low percent of yearly median\n\r" + 
-	" - :chart_with_upwards_trend: - bottom intersetion of mean\n\r" + 
+	" - :chart_with_upwards_trend: - bottom intersetion of todays, 5 days or 50 days mean\n\r" + 
 	" - :candle: - unique candle event\n\r" +
 	" - :man-boy-boy: - volume increase\n\r" +
 	" - :arrow_up: - big price raise\n\r" +

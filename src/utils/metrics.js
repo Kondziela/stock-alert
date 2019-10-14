@@ -3,8 +3,19 @@ const 	sorters = require('./sorters'),
 
 let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] < o2[field] ? o1 : o2 ),
 	maxElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] > o2[field] ? o1 : o2 ),
-	averageValue = (values, field) => {
-		return values.map( value => value[field]).reduce( (a, b) => a + b) / values.length;
+	averageValue = (values, field) => values.map( value => value[field]).reduce( (a, b) => a + b, 0) / values.length,
+	averageOfDays = (values, days, offset) => averageValue(values.slice(0 + offset, days), 'close'),
+	bottomIntersectionOfMean = (mainToday, mainYesterday, intersectionToday, intersectionYesterday) => {
+		return mainYesterday > intersectionYesterday && mainToday < intersectionToday;
+	},
+	bottomIntersectionOfMeanByDays = (allValues, main, intersection) => {
+		allValues.sort(sorters.sortByDateDesc);
+		let intersectionToday = averageOfDays(allValues, main, 0),
+			intersectionYesterday = averageOfDays(allValues, main, 1),
+			mainToday = averageOfDays(allValues, intersection, 0),
+			mainYesterday = averageOfDays(allValues, intersection, 1);
+
+		return bottomIntersectionOfMean(mainToday, mainYesterday, intersectionToday, intersectionYesterday);
 	},
 	generateSetMetrics = (allValues, field) => {
 		let min = minElement(allValues, field),
@@ -21,13 +32,7 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 
 		return (1 - (index/allValues.length)) < percent;
 	},
-	bottomIntersectionOfMean = (allValues, averageLength) => {
-		allValues.sort(sorters.sortByDateAsc);
-		let todaysDays = allValues.slice(0, averageLength),
-			yesterdaysDays = allValues.slice(1, averageLength + 1);
-
-		return todaysDays[0].close > averageValue(todaysDays, 'close') && yesterdaysDays[0].close < averageValue(yesterdaysDays, 'close');
-	},
+	
 	oneDayCandleEvent = ({open, close, low, high}) => {
 		let openClose = Math.abs(open - close),
 			minMax = Math.abs(low - high);
@@ -57,7 +62,7 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 
 module.exports.generateSetMetrics = generateSetMetrics;
 module.exports.medianLowPercent = medianLowPercent;
-module.exports.bottomIntersectionOfMean = bottomIntersectionOfMean;
+module.exports.bottomIntersectionOfMeanByDays = bottomIntersectionOfMeanByDays;
 module.exports.oneDayCandleEvent = oneDayCandleEvent;
 module.exports.volumeIncrease = volumeIncrease;
 module.exports.dailyRaise = dailyRaise;
