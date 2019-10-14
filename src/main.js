@@ -7,7 +7,8 @@ var request = require('./senders/request.js'),
 	sorters = require('./utils/sorters'),
 	analyze_service = require('./analyze_service'),
 	user_service = require('./user_service'),
-	predict_service = require('./predict_service');
+	predict_service = require('./predict_service'),
+	database_service = require('./database/database_service');
 
 let countMetrics = (company, allValues) => {
 		allValues.sort(sorters.sortByDateAsc);
@@ -45,8 +46,17 @@ let countMetrics = (company, allValues) => {
 		sendToSlack(user_service.legend());
 		sendToSlack(user_service.analyzePrefix());
 
-		companiesUSA.forEach(company => processCompany(company, request.requestForUSAStock, parser.parseTiingoResponse));
-		companiesGermany.forEach(company => processCompany(company, request.requestForGermanStock, parser.parseQuandlResponse));
+		database_service.init();
+
+		database_service.findByCountry('USA', (companiesUSA) => {
+			companiesUSA.forEach(company => processCompany(company, request.requestForUSAStock, parser.parseTiingoResponse));
+		});
+		database_service.findByCountry('Germany', (companiesGermany) => {
+			companiesGermany.forEach(company => processCompany(company, request.requestForGermanStock, parser.parseQuandlResponse));
+			database_service.close();
+		});
+
+
 	}
 
 module.exports.mainProcess = mainProcess;

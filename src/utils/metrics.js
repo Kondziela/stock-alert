@@ -44,7 +44,7 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 		return false;
 	},
 	volumeIncrease = (allValues, ratio) => {
-		allValues.sort(sorters.sortByDateAsc);
+		allValues.sort(sorters.sortByDateDesc);
 		let today = allValues[0],
 			yesterday = allValues[1];
 
@@ -53,7 +53,7 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 	dailyRaise = (today, ratio) => today.close > (today.open + (today.open * ratio)),
 	dailyFall = (today, ratio) => today.close < (today.open - (today.open * ratio)),
 	holeInChart = (allValues, ratio) => {
-		allValues.sort(sorters.sortByDateAsc);
+		allValues.sort(sorters.sortByDateDesc);
 		let todaysOpen = allValues[0].open,
 			yesterdayClose = allValues[1].close;
 
