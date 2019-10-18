@@ -11,14 +11,14 @@ var request = require('./senders/request.js'),
 	database_service = require('./database/database_service');
 
 let countMetrics = (company, allValues) => {
-		allValues.sort(sorters.sortByDateAsc);
+		allValues.sort(sorters.sortByDateDesc);
 
-		let todaysValue = allValues[allValues.length - 1],
+		let todaysValue = allValues[0],
 			anaylyze = analyze_service.anaylzeCompany([...allValues], todaysValue);
 
 			console.log(`Result for company ${company.name}: `, anaylyze);
 		if (anaylyze.anyLow) {
-			let prediction = predictPrice(company, allValues);
+			let prediction = predictPrice(company, [...allValues]);
 			sendToSlack(
 				user_service.slackMetricsResponse(company, [...allValues], todaysValue, anaylyze, prediction)
 			);
