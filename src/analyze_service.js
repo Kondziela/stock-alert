@@ -4,8 +4,8 @@ var util = require('./utils/util'),
 const 	MEDIAN_PERCENT = 0.15,
 		AVERAGE_DAYS = 10,
 		VOLUME_INCREASE_RATIO = 2,
-		DAILY_CHANGE_RATIO = 0.05,
-		HOLE_CHANGE = 0.03;
+		DAILY_CHANGE_RATIO = 0.02,
+		HOLE_CHANGE = 0.02;
 
 let checkIfAnyTrue = (result) => Object.keys(result).some( key => result[key]),
 	/**
@@ -48,15 +48,15 @@ let checkIfAnyTrue = (result) => Object.keys(result).some( key => result[key]),
 module.exports.anaylzeCompany = (allValues, todaysValue) => {
 
 	let result =  {
-			medianLowPercent: medianLowPercent(todaysValue, allValues),
-			bottomIntersectionOfMean: bottomIntersectionOfMean(allValues),
-			bottomIntersectionOfMean5And20: bottomIntersectionOfMean5And20(allValues),
-			bottomIntersectionOfMean50And200: bottomIntersectionOfMean50And200(allValues),
+			medianLowPercent: medianLowPercent(todaysValue, [...allValues]),
+			bottomIntersectionOfMean: bottomIntersectionOfMean([...allValues]),
+			bottomIntersectionOfMean5And20: bottomIntersectionOfMean5And20([...allValues]),
+			bottomIntersectionOfMean50And200: bottomIntersectionOfMean50And200([...allValues]),
 			oneDayCandleEvent: oneDayCandleEvent(todaysValue),
-			volumeIncrease: volumeIncrease(allValues),
+			volumeIncrease: volumeIncrease([...allValues]),
 			dailyRaise: dailyRaise(todaysValue),
 			dailyFall: dailyFall(todaysValue),
-			holeInChart: holeInChart(allValues)
+			holeInChart: holeInChart([...allValues])
 		};
 
 

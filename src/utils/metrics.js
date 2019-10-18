@@ -9,7 +9,6 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 		return mainYesterday > intersectionYesterday && mainToday < intersectionToday;
 	},
 	bottomIntersectionOfMeanByDays = (allValues, main, intersection) => {
-		allValues.sort(sorters.sortByDateDesc);
 		let intersectionToday = averageOfDays(allValues, main, 0),
 			intersectionYesterday = averageOfDays(allValues, main, 1),
 			mainToday = averageOfDays(allValues, intersection, 0),
@@ -27,7 +26,6 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 			}
 	},
 	medianLowPercent = (todayObject, allValues, percent) => {
-		allValues.sort(sorters.sortByCloseDesc);
 		let index = allValues.findIndex((object) => object.date == todayObject.date);
 
 		return (1 - (index/allValues.length)) < percent;
@@ -44,7 +42,6 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 		return false;
 	},
 	volumeIncrease = (allValues, ratio) => {
-		allValues.sort(sorters.sortByDateDesc);
 		let today = allValues[0],
 			yesterday = allValues[1];
 
@@ -53,7 +50,6 @@ let minElement = (allValues, field) => allValues.reduce( (o1, o2) => o1[field] <
 	dailyRaise = (today, ratio) => today.close > (today.open + (today.open * ratio)),
 	dailyFall = (today, ratio) => today.close < (today.open - (today.open * ratio)),
 	holeInChart = (allValues, ratio) => {
-		allValues.sort(sorters.sortByDateDesc);
 		let todaysOpen = allValues[0].open,
 			yesterdayClose = allValues[1].close;
 
