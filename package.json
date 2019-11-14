@@ -4,6 +4,7 @@
   "description": "Analyse and inform about stock trade",
   "main": "index.js",
   "dependencies": {
+    "@types/node": "^12.12.7",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "junit": "^1.4.9",
