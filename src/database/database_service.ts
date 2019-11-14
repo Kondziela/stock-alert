@@ -3,19 +3,20 @@ import CompanyModel from './schema/company';
 
 export class DatabaseService {
 
-	private getDBUri = () => 
-		`mongodb+srv://${process.env.mongodb_user}:${process.env.mongodb_password}@cluster0-iyhzw.mongodb.net/test?retryWrites=true&w=majority`
+	private getDBUri(): string { 
+		return `mongodb+srv://${process.env.mongodb_user}:${process.env.mongodb_password}@cluster0-iyhzw.mongodb.net/test?retryWrites=true&w=majority`
+	}
 
-	public init = () => {
+	public init(): void {
 		mongoose.connect(this.getDBUri(), { useCreateIndex: true, useNewUrlParser: true });
 		mongoose.Promise = global.Promise;
 	}
 
-	public close = () => {
+	public close(): void {
 		mongoose.connection.close();
 	}
 
-	public findByCountry = (country, callback) => {
+	public findByCountry(country: string, callback: any): void {
 		CompanyModel.find({country: country}, (err, docs) => {
 			if (!err) {
 				callback.call(this, docs);
