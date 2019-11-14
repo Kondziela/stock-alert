@@ -6,11 +6,11 @@
       "sourceMap": true
     },
     "include": [
-      "src/database/schema/price.ts",
       "src/*.ts",
       "src/**/*.ts",
       "src/**/**/*.ts",
-      "src/**/**/**/*.ts"
+      "src/**/**/**/*.ts",
+      "src/database/schema/price.ts"
     ],
     "exclude": [
       "node_modules"
