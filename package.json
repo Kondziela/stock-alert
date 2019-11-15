@@ -21,7 +21,9 @@
   "devDependencies": {},
   "scripts": {
     "test": "junit test/*.js",
-    "start": "tsc; cp src/data/tokens.json dist/data; node dist/start.js",
+    "start-local": "tsc; cp src/data/tokens.json dist/data; node dist/start.js",
+    "schedule": "tsc; node dist/start.js",
+    "start": "tsc; node dist/index.js",
     "start-once": "node src/main.js"
   },
   "repository": {
