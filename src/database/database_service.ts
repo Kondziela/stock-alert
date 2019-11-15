@@ -1,14 +1,18 @@
 import * as mongoose from 'mongoose';
-import CompanyModel from './schema/company';
+import Company from './schema/company';
 
 export class DatabaseService {
 
 	private getDBUri(): string { 
-		return `mongodb+srv://${process.env.mongodb_user}:${process.env.mongodb_password}@cluster0-iyhzw.mongodb.net/test?retryWrites=true&w=majority`
+		return `mongodb+srv://${process.env.mongodb_user}:${process.env.mongodb_password}` +
+			`@cluster0-iyhzw.mongodb.net/cheeki-breeki?retryWrites=true&w=majority`
+
+			
 	}
 
 	public init(): void {
-		mongoose.connect(this.getDBUri(), { useCreateIndex: true, useNewUrlParser: true });
+		console.log(this.getDBUri());
+		mongoose.connect(this.getDBUri(), { useUnifiedTopology: true, useNewUrlParser: true });
 		mongoose.Promise = global.Promise;
 	}
 
@@ -17,7 +21,7 @@ export class DatabaseService {
 	}
 
 	public findByCountry(country: string, callback: any): void {
-		CompanyModel.find({country: country}, (err, docs) => {
+		Company.find({"country": country}).exec((err, docs) => {
 			if (!err) {
 				callback.call(this, docs);
 			} else {

@@ -10,7 +10,8 @@
       "src/**/*.ts",
       "src/**/**/*.ts",
       "src/**/**/**/*.ts",
-      "src/database/schema/price.ts"
+      "src/start.ts",
+      "src/data/tokens.json"
     ],
     "exclude": [
       "node_modules"

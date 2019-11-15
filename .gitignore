@@ -63,5 +63,6 @@ typings/
 # my own
 package-lock.json
 tokens.js
+tokens.json
 dist/
 .idea/

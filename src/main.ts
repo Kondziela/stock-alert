@@ -31,7 +31,7 @@ export class Main {
 
 	private countMetrics(company: any, allValues: Array<any>): void {
 		allValues.sort(this.sorter.sortByDateDesc);
-
+	
 		let todaysValue = allValues[0],
 			anaylyze = this.analyzeService.anaylzeCompany([...allValues], todaysValue);
 
@@ -57,10 +57,15 @@ export class Main {
 		this.slackSender.sendToSlack(this.userService.legend());
 		this.slackSender.sendToSlack(this.userService.analyzePrefix());
 
+		console.log('Init DB');
 		this.databaseService.init();
 
-		this.databaseService.findByCountry('USA', (companiesUSA) => {
+		console.log('Start processing companies');
+		this.databaseService.findByCountry("USA", (companiesUSA) => {
+			console.log('Find USA companies', companiesUSA);
 			companiesUSA.forEach(company => this.processCompany(company, this.request.requestForUSAStock, this.parser.parseTiingoResponse));
+			console.log('Close DB');
+			this.databaseService.close();
 		});
 		// TODO[AKO]: repair in bug
 		// this.databaseService.findByCountry('Germany', (companiesGermany) => {

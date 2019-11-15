@@ -6,6 +6,4 @@ var CompanySchema = new mongoose.Schema({
 	name: String
 });
 
-const CompanyModel = mongoose.model('Company', CompanySchema);
-
-export default CompanyModel;
+export default mongoose.model('Company', CompanySchema);
