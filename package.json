@@ -15,7 +15,8 @@
     "nodemailer": "^6.3.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "slack-node": "^0.1.8"
+    "slack-node": "^0.1.8",
+    "typescript": "^3.7.2"
   },
   "devDependencies": {},
   "scripts": {
