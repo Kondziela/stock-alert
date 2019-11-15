@@ -1,4 +1,4 @@
-import { Main } from './main';
+import { Main } from './bot/main';
 import * as fs from 'fs';
 
 const path = __dirname + '/data/tokens.json'
