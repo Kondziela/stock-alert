@@ -1,3 +1,7 @@
+/**
+ * DEPRECATED FOR NOW. WILL BE REWRITTEN IN SECOND RELEASE
+ */
+
 const regression = require('./data_science/regression'),
 
 	REGREASSION_CHECK_SET_SIZE = 1;
