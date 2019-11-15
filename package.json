@@ -4,6 +4,7 @@
   "description": "Analyse and inform about stock trade",
   "main": "index.js",
   "dependencies": {
+    "@types/node": "^12.12.7",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "junit": "^1.4.9",
@@ -14,12 +15,15 @@
     "nodemailer": "^6.3.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "slack-node": "^0.1.8"
+    "slack-node": "^0.1.8",
+    "typescript": "^3.7.2"
   },
   "devDependencies": {},
   "scripts": {
     "test": "junit test/*.js",
-    "start": "node index.js",
+    "start-local": "tsc; cp src/data/tokens.json dist/data; node dist/start.js",
+    "schedule": "tsc; node dist/start.js",
+    "start": "tsc; node dist/index.js",
     "start-once": "node src/main.js"
   },
   "repository": {

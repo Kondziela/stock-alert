@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "commonjs",
+      "outDir": "dist",
+      "sourceMap": true
+    },
+    "include": [
+      "src/*.ts",
+      "src/**/*.ts",
+      "src/**/**/*.ts",
+      "src/**/**/**/*.ts",
+      "src/start.ts",
+      "src/data/tokens.json"
+    ],
+    "exclude": [
+      "node_modules"
+    ]
+  }
