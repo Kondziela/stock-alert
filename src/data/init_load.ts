@@ -6,6 +6,16 @@ import * as fs from 'fs';
 import {Request} from '../senders/request';
 import {Parser} from '../utils/parser';
 
+/**
+ * Script for initial load. Loads:
+ *  - countries
+ *  - companies
+ *  - historical prices
+ * 
+ * WARNIGN: not all companies have all historical data in Tiingo e.g. DELL.
+ */
+const STARTING_DATE_FOR_PRICES = '2014-01-01';
+
 fs.readFile(__dirname + '/tokens.json', 'utf-8', (err, data) => {
     let tokens = JSON.parse(data.toString());
     process.env.tiingi_token = tokens['tiingi_token'];
@@ -59,7 +69,7 @@ let loadCompaniesForCountry = (country) => {
 
 let loadHistoricalData = (company) => {
 
-    new Request().requestForUSAStock(company.code, '2014-01-01')
+    new Request().requestForUSAStock(company.code, STARTING_DATE_FOR_PRICES)
         .then( data => {
             let prices = new Parser().parseTiingoResponse(data);
 
