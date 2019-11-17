@@ -1,4 +1,6 @@
 import * as mongoose from 'mongoose';
+require('./schema/company');
+import Country from './schema/country';
 import Company from './schema/company';
 
 export class DatabaseService {
@@ -21,12 +23,16 @@ export class DatabaseService {
 	}
 
 	public findByCountry(country: string, callback: any): void {
-		Company.find({"country": country}).exec((err, docs) => {
-			if (!err) {
-				callback.call(this, docs);
-			} else {
-				console.log("Database connection error");
-			}
-		});
+		Country.findOne({"country": country}).exec((err, dbCountry) => {
+			Company.find({"country": dbCountry}).exec((err, companies) => {
+				console.log("Company by country: ", companies);
+				if (!err) {
+					callback.call(this, companies);
+				} else {
+					console.log("Database connection error", err);
+				}
+			});
+			
+		})
 	}
 }

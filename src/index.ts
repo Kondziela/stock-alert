@@ -1,5 +1,5 @@
 import * as express from 'express';
-import {Main} from './bot/main';
+import {Main} from './main';
 
 const app = express()
 const port = process.env.PORT || 3000
