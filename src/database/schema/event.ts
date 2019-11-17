@@ -1,11 +1,9 @@
 import * as mongoose from 'mongoose';
 
-const EventSchema = new mongoose.Schema({
-	type: String,
+var EventSchema = new mongoose.Schema({
+	company_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Country' },
 	date: Date,
-	company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' }
-});
+	type: String
+},{ collection: 'events' });
 
-const EventModel = mongoose.model('Event', EventSchema);
-
-export default EventModel;
+export default mongoose.model('Event', EventSchema);

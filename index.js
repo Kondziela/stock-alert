@@ -1,5 +1,5 @@
 const express = require('express')
-const main = require('./src/bot/main')
+const main = require('./src/main')
 const app = express()
 const port = process.env.PORT || 3000
 

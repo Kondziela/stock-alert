@@ -8,7 +8,7 @@ const PriceSchema = new mongoose.Schema({
 	volume: Number,
 	date: Date,
 	company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' }
-});
+},{ collection: 'prices' });
 
 const PriceModel = mongoose.model('Price', PriceSchema);
 

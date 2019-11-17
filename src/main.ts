@@ -5,7 +5,7 @@ import { Parser } from './utils/parser';
 import { Sorter } from './utils/sorters';
 import { AnalyzeService } from './analyze_service';
 import { UserService } from './user_service';
-import { DatabaseService } from '../database/database_service';
+import { DatabaseService } from './database/database_service';
 
 export class Main {
 
