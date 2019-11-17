@@ -1,7 +1,10 @@
 import {DatabaseService} from '../database/database_service';
 import Country from '../database/schema/country';
 import Company from '../database/schema/company';
+import Price from '../database/schema/price';
 import * as fs from 'fs';
+import {Request} from '../senders/request';
+import {Parser} from '../utils/parser';
 
 fs.readFile(__dirname + '/tokens.json', 'utf-8', (err, data) => {
     let tokens = JSON.parse(data.toString());
@@ -10,7 +13,6 @@ fs.readFile(__dirname + '/tokens.json', 'utf-8', (err, data) => {
     process.env.german_token = tokens['german_token'];
     process.env.mongodb_user = tokens['mongodb_user'];
     process.env.mongodb_password = tokens['mongodb_password'];
-    console.log(`Mongo pass: ${process.env.mongodb_user}, ${process.env.mongodb_password}`)
     initLoad();
 });
 
@@ -18,7 +20,14 @@ let initLoad = () => {
     let database = new DatabaseService();
     database.init();
 
-    // load countries
+    loadCountries();
+    
+
+    // database.close();
+
+};
+
+let loadCountries = () => {
     let countries = JSON.parse(fs.readFileSync(__dirname + '/json/countries.json', 'utf-8').toString())
 
     countries.forEach(country => {
@@ -26,23 +35,45 @@ let initLoad = () => {
         Country.findOneAndUpdate({country: country.country}, {}, {upsert: true}, (err, dbCountry) => {
             console.log("Country processed: ", dbCountry, err);
             if (!err) {
-                let companies = JSON.parse(fs.readFileSync(__dirname + `/json/companies${dbCountry.country}.json`).toString());
+                loadCompaniesForCountry(dbCountry);
+            }
+        })
+    });
+};
+
+let loadCompaniesForCountry = (country) => {
+    let companies = JSON.parse(fs.readFileSync(__dirname + `/json/companies${country.country}.json`).toString());
                 companies.forEach(company => {
                     Company.findOneAndUpdate({
                         code: company.code, 
                         name: company.name,
-                        country: dbCountry
+                        country: country
                     }, {}, {upsert: true}, (err, dbCompany) => {
                         console.log("Company processed: ", dbCompany, err);
-                        dbCountry.countries.push(dbCompany);
+                        if (!err) {
+                            loadHistoricalData(dbCompany);
+                        }
                     });
                 });
-            }
-        })
-    });
+};
 
-    // database.close();
+let loadHistoricalData = (company) => {
 
+    new Request().requestForUSAStock(company.code, '2014-01-01')
+        .then( data => {
+            let prices = new Parser().parseTiingoResponse(data);
+
+            console.log(`For company ${company.name} downloaded ${prices.length} prices`);
+            prices.forEach( (price, index) => {
+                price['company'] = company;
+                Price.findOneAndUpdate(price, {}, {upsert: true}, (err, dbPrice) => {
+                    if (err) {
+                        console.log("Error during insert price", err);
+                    } else {
+                        console.log(`Price ${index} added for compant ${company.name}`);
+                    }
+                });
+            });
+            
+        });
 }
-
-// let load
