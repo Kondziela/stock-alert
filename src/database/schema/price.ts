@@ -3,8 +3,8 @@ import * as mongoose from 'mongoose';
 const PriceSchema = new mongoose.Schema({
 	open: Number,
 	close: Number,
-	min: Number,
-	max: Number,
+	low: Number,
+	high: Number,
 	volume: Number,
 	date: Date,
 	company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' }
