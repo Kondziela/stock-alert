@@ -1,9 +1,13 @@
 import * as mongoose from 'mongoose';
+import {EventType} from "../../bots/EventType";
 
 var EventSchema = new mongoose.Schema({
-	company_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Country' },
+	company: { type: mongoose.Schema.Types.ObjectId, ref: 'Country' },
 	date: Date,
-	type: String
+	type: {
+		type: String,
+		enum: Object.keys(EventType)
+	}
 },{ collection: 'events' });
 
 export default mongoose.model('Event', EventSchema);

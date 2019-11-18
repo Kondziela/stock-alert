@@ -10,6 +10,6 @@ const PriceSchema = new mongoose.Schema({
 	company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' }
 },{ collection: 'prices' });
 
-const PriceModel = mongoose.model('Price', PriceSchema);
+const Price = mongoose.model('Price', PriceSchema);
 
-export default PriceModel;
+export default Price;

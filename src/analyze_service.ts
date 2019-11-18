@@ -66,20 +66,21 @@ export class AnalyzeService {
 		return this.metric.holeInChart(allValues, this.HOLE_CHANGE);
 	}
 
- 	public anaylzeCompany(allValues: Array<any>, todaysValue: object): object {
+ 	public analizeCompany(allValues: Array<any>, todaysValue: object): object {
 
 		let result =  {
-				medianLowPercent: this.medianLowPercent(todaysValue, [...allValues]),
-				bottomIntersectionOfMean: this.bottomIntersectionOfMean([...allValues]),
-				bottomIntersectionOfMean5And20: this.bottomIntersectionOfMean5And20([...allValues]),
-				bottomIntersectionOfMean50And200: this.bottomIntersectionOfMean50And200([...allValues]),
-				volumeIncrease: this.volumeIncrease([...allValues]),
-				dailyRaise: this.dailyRaise(todaysValue),
-				dailyFall: this.dailyFall(todaysValue),
-				holeInChart: this.holeInChart([...allValues])
+				PRICE_MEDIAN_LOW: this.medianLowPercent(todaysValue, [...allValues]),
+				BOTTOM_INTER_MEAN: this.bottomIntersectionOfMean([...allValues]),
+				BOTTOM_INTER_MEAN_5_20: this.bottomIntersectionOfMean5And20([...allValues]),
+				BOTTOM_INTER_MEAN_50_200: this.bottomIntersectionOfMean50And200([...allValues]),
+				VOLUME_INCREASE: this.volumeIncrease([...allValues]),
+				DAILY_RAISE: this.dailyRaise(todaysValue),
+				DAILY_FALL: this.dailyFall(todaysValue),
+				HOLE_IN_CHART: this.holeInChart([...allValues])
 			};
 
 
+		// TODO[AKO]: to remove when change logic of bots
 		result['anyLow'] = this.checkIfAnyTrue(result);
 
 		return result;

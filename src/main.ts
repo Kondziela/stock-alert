@@ -7,6 +7,10 @@ import { AnalyzeService } from './analyze_service';
 import { UserService } from './user_service';
 import { DatabaseService } from './database/database_service';
 
+/**
+ * DEPRECATED
+ * TODO[AKO]: to delete in next tasks
+ */
 export class Main {
 
 	private request: Request;
@@ -33,7 +37,7 @@ export class Main {
 		allValues.sort(this.sorter.sortByDateDesc);
 	
 		let todaysValue = allValues[0],
-			anaylyze = this.analyzeService.anaylzeCompany([...allValues], todaysValue);
+			anaylyze = this.analyzeService.analizeCompany([...allValues], todaysValue);
 
 			console.log(`Result for company ${company.name}: `, anaylyze);
 		if (anaylyze['anyLow']) {
