@@ -23,6 +23,7 @@ export class PriceBot {
                  Company.find({country: country}, (err, companies) => {
                      companies.forEach( company => {
                          console.log(`Download price for ${company['name']}`);
+                         // TODO[AKO]: adjust for another markets
                          this.upsert.upsertPricesForUSA(company, this.util.today());
                      });
                  });

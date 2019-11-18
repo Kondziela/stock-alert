@@ -45,5 +45,6 @@ let loadCompaniesForCountry = (country) => {
 };
 
 let loadHistoricalData = (company) => {
+    // TODO[AKO]: adjust for another markets
     upsert.upsertPricesForUSA(company, STARTING_DATE_FOR_PRICES);
 };
