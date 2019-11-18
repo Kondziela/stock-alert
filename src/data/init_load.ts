@@ -28,6 +28,8 @@ let initLoad = () => {
     database.init();
 
     loadCountries();
+
+    // close db connection
 };
 
 let loadCountries = () => {
