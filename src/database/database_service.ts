@@ -3,6 +3,8 @@ require('./schema/company');
 import Country from './schema/country';
 import Company from './schema/company';
 import Price from './schema/Price';
+import Event from './schema/event';
+import Activity from './schema/activity';
 
 export class DatabaseService {
 
@@ -58,5 +60,13 @@ export class DatabaseService {
 				console.error('Error during looking for prices');
 			}
 		});
+	}
+
+	public findEventsByDate(date: Date): Promise<Array<Object>> {
+		return Event.find({date: date}).populate('company');
+	}
+
+	public findActivityByEvent(event: Object): Promise<Array<Object>> {
+		return Activity.find({event: event});
 	}
 }
