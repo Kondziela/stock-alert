@@ -30,8 +30,7 @@ export class Request {
                     },
                 'url': url
                 };
-        
-        console.log(requestOptions['headers']);
+
     	return request(requestOptions);
     }
 

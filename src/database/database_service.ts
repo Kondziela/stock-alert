@@ -23,9 +23,9 @@ export class DatabaseService {
 	}
 
 	public findByCountry(country: string, callback: any): void {
-		Country.findOne({"country": country}).exec((err, dbCountry) => {
-			Company.find({"country": dbCountry}).exec((err, companies) => {
-				console.log("Company by country: ", companies);
+		Country.findOne({"country": country}, (err, dbCountry) => {
+			Company.find({"country": dbCountry}, (err, companies) => {
+				console.log("Company by country: ", companies['name']);
 				if (!err) {
 					callback.call(this, companies);
 				} else {

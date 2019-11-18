@@ -1,5 +1,6 @@
 import { Main } from './main';
 import * as fs from 'fs';
+import {PriceBot} from "./price_bot";
 
 const path = __dirname + '/data/tokens.json'
 
@@ -15,8 +16,8 @@ try {
         process.env.german_token = tokens['german_token'];
         process.env.mongodb_user = tokens['mongodb_user'];
         process.env.mongodb_password = tokens['mongodb_password'];
-        console.log(`Mongo pass: ${process.env.mongodb_user}, ${process.env.mongodb_password}`)
-        new Main().mainProcess();
+        // new Main().mainProcess();
+        new PriceBot().run();
     });
   } else {
       console.log("Use default environment variables. Tokens don't exist.");
