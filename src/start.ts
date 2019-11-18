@@ -15,7 +15,6 @@ try {
         process.env.german_token = tokens['german_token'];
         process.env.mongodb_user = tokens['mongodb_user'];
         process.env.mongodb_password = tokens['mongodb_password'];
-        console.log(`Mongo pass: ${process.env.mongodb_user}, ${process.env.mongodb_password}`)
         new Main().mainProcess();
     });
   } else {
