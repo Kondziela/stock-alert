@@ -13,17 +13,19 @@ export class PriceBot {
          this.util = new Util();
      }
 
-     public run() {
-         console.log("Start Price Bot");
-         this.database.init();
-         this.database.findActiveCompanies().then( (companies) => {
-             Promise.all(companies.map( company => {
-                 console.log(`Download price for ${company['name']}`);
-                 return this.upsert.upsertPrices(company, this.util.today());
-             })).then( () => {
-                 console.log('End processing Price Bot');
-                 this.database.close();
-             });
+     public run(): Promise<void> {
+         return new Promise<void>((resolve, reject) => {
+             console.log("Start Price Bot");
+
+             this.database.findActiveCompanies().then((companies) => {
+                 Promise.all(companies.map(company => {
+                     console.log(`Download price for ${company['name']}`);
+                     return this.upsert.upsertPrices(company, this.util.today());
+                 })).then(() => {
+                     console.log('End processing Price Bot');
+                     resolve()
+                 }).catch( err => reject(err));
+             }).catch(err => reject(err));
          });
      }
 }
