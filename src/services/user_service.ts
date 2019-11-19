@@ -1,14 +1,11 @@
-import { Metric } from './utils/metrics';
-import {ActivityType} from "./bots/activity_type";
-import {Util} from "./utils/util";
+import {ActivityType} from "../bots/activity_type";
+import {Util} from "../utils/util";
 
 export class UserService {
 
-	private metric: Metric;
 	private util: Util;
 
 	constructor() {
-		this.metric = new Metric();
 		this.util = new Util();
 	}
 
@@ -41,40 +38,6 @@ export class UserService {
 		}
 	}
 
-	public slackMetricsResponse(company: any, allValues: Array<any>,todaysValue: any, anaylyze: any): string {
-		let measureMetric: any = this.metric.generateSetMetrics(allValues, "close"),
-			slackString = `${company.name}: current: ${todaysValue.close}, min: ${measureMetric.min.close}, max: ${measureMetric.max.close}`;
-	
-		if (anaylyze.medianLowPercent) {
-			slackString += " :moneybag:";
-		}
-		if (anaylyze.bottomIntersectionOfMean || anaylyze.bottomIntersectionOfMean5And20 || anaylyze.bottomIntersectionOfMean50And200) {
-			slackString += " :chart_with_upwards_trend:";
-		}
-		if (anaylyze.volumeIncrease) {
-			slackString += " :man-boy-boy:"
-		}
-		if (anaylyze.dailyRaise) {
-			slackString += " :arrow_up:"
-		}
-		if (anaylyze.dailyFall) {
-			slackString += " :arrow_down_small:"
-		}
-		if (anaylyze.holeInChart) {
-			slackString += " :hole:"
-		}
-	
-		console.log(`Found metrics for company ${company.name} ${measureMetric}`);
-	
-		return slackString;
-	}
-	
-	public slackPredictionResponse(company, prediction: any): string {
-		return `Tomorrow price prediction:\n\r regression: ${prediction.regression}`;
-	}	
-	public watchingCompanies(companies: Array<any>): string {
-		return "Watching companies:\n\r" + companies.map(o => o.name).join(', ');
-	}
 	public analyzePrefix(): String {
 		return `Analyze for date ${this.util.today()}:`;
 	}

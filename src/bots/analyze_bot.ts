@@ -1,6 +1,6 @@
 import { Util } from '../utils/util';
 import { Sorter } from '../utils/sorters';
-import { AnalyzeService } from '../analyze_service';
+import { AnalyzeService } from '../services/analyze_service';
 import { DatabaseService } from '../database/database_service';
 import Event from '../database/schema/event';
 import Activity from '../database/schema/activity';
@@ -21,18 +21,16 @@ export class AnalyzeBot {
         this.databaseService = new DatabaseService();
     }
 
-    public run(): void {
-        console.log("Start analyzing bot");
-        this.databaseService.init();
+    public run(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            console.log("Start analyzing bot");
 
-        this.databaseService.findActiveCompanies().then( companies => {
-            Promise.all(companies.map( company => this.processPricesForCompany(company))).then( () => {
-                console.log('End of processing for Analyze bot');
-                this.databaseService.close();
-            }).catch( err => {
-                this.databaseService.close();
-                throw new Error(err);
-            });
+            this.databaseService.findActiveCompanies().then(companies => {
+                Promise.all(companies.map(company => this.processPricesForCompany(company))).then(() => {
+                    console.log('End of processing for Analyze bot');
+                    resolve();
+                }).catch(err => reject(err));
+            }).catch( err => reject(err));
         });
     }
 
@@ -60,7 +58,7 @@ export class AnalyzeBot {
                 resolve();
             }
             analyzeKeys.forEach(key => {
-                this.upertEvent(company).then( event => {
+                this.upsertEvent(company).then( event => {
                         this.upsertActivity(event, todaysValue, key).then( () => {
                             console.log(`Created event and activity for company ${company['name']}: ${ActivityType[key]}`);
                             resolve();
@@ -70,12 +68,15 @@ export class AnalyzeBot {
         });
     }
 
-    private upertEvent(company: Object): Promise<Object> {
+    private upsertEvent(company: Object): Promise<Object> {
         return Event.findOneAndUpdate({
             company: company,
             date: new Date(this.util.today()),
             type: EventType.ACTIVITY
-        }, {}, {upsert: true});
+        }, {}, {
+            upsert: true,
+            new: true
+        });
     }
 
     private upsertActivity(event: Object, price: Object, key: string): Promise<Object> {
@@ -83,6 +84,9 @@ export class AnalyzeBot {
             type: ActivityType[key],
             event: event,
             price: price
-        }, {}, {upsert: true});
+        }, {}, {
+            upsert: true,
+            new: true
+        });
     }
 }

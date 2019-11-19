@@ -1,83 +1,59 @@
-import { Request } from './senders/request';
-import { SlackSender } from './senders/slack_sender';
-import { Util } from './utils/util';
-import { Parser } from './utils/parser';
-import { Sorter } from './utils/sorters';
-import { AnalyzeService } from './analyze_service';
-import { UserService } from './user_service';
 import { DatabaseService } from './database/database_service';
+import {PriceBot} from "./bots/price_bot";
+import {SendingBot} from "./bots/send_bot";
+import {AnalyzeBot} from "./bots/analyze_bot";
+import * as fs from "fs";
 
-/**
- * DEPRECATED
- * TODO[AKO]: to delete in next tasks
- */
 export class Main {
 
-	private request: Request;
-	private slackSender: SlackSender
-	private util: Util;
-	private parser: Parser;
-	private sorter: Sorter;
-	private analyzeService: AnalyzeService;
-	private userService: UserService;
+	private priceBot: PriceBot;
+	private analyzeBot: AnalyzeBot;
+	private sendingBot: SendingBot;
 	private databaseService: DatabaseService;
 
 	constructor() {
-		this.request = new Request();
-		this.slackSender = new SlackSender();
-		this.util = new Util();
-		this.parser = new Parser();
-		this.sorter = new Sorter();
-		this.analyzeService = new AnalyzeService();
-		this.userService = new UserService();
+		this.priceBot = new PriceBot();
+		this.analyzeBot = new AnalyzeBot();
+		this.sendingBot = new SendingBot();
 		this.databaseService = new DatabaseService();
 	}
 
-	private countMetrics(company: any, allValues: Array<any>): void {
-		allValues.sort(this.sorter.sortByDateDesc);
-	
-		let todaysValue = allValues[0],
-			anaylyze = this.analyzeService.analizeCompany([...allValues], todaysValue);
-
-			console.log(`Result for company ${company.name}: `, anaylyze);
-		if (anaylyze['anyLow']) {
-			this.slackSender.sendToSlack(
-				this.userService.slackMetricsResponse(company, [...allValues], todaysValue, anaylyze)
-			);
-		}
+	public startProcessing(): void {
+		this.databaseService.init()
+			.then(() => this.priceBot.run()
+			.then(() => this.analyzeBot.run()
+			.then(() => this.sendingBot.run()
+			.then(() => this.databaseService.close())
+				.catch(err => console.error(err)))
+				.catch(err => console.error(err)))
+				.catch(err => console.error(err)))
+				.catch(err => console.error(err));
 	}
 
-	private processCompany = (company, requestFn, parsFn) => {
+	public initEnvironmentVariables(): Promise<void> {
+		return new Promise<void>((resolve, reject) => {
+			const path = __dirname + '/data/tokens.json';
 
-		requestFn.call(this, company.code, this.util.oneYearAgo())
-			.then((body) => {
-				this.countMetrics(company, parsFn.call(this, body));
-			});
-	}
-
-	mainProcess = () => {
-		// TODO[AKO]: change with structure
-		//sendToSlack(user_service.watchingCompanies(companiesUSA.concat(companiesGermany)));
-		this.slackSender.sendToSlack(this.userService.legend());
-		this.slackSender.sendToSlack(this.userService.analyzePrefix());
-
-		console.log('Init DB');
-		this.databaseService.init();
-
-		console.log('Start processing companies');
-		this.databaseService.findByCountry("USA", (companiesUSA) => {
-			console.log('Find USA companies', companiesUSA);
-			companiesUSA.forEach(company => this.processCompany(company, this.request.requestForUSAStock, this.parser.parseTiingoResponse));
-			console.log('Close DB');
-			this.databaseService.close();
+			try {
+				if (fs.existsSync(path)) {
+					console.log('Token exist');
+					fs.readFile(path, 'utf-8', (err, data) => {
+						let tokens = JSON.parse(data.toString());
+						process.env.tiingi_token = tokens['tiingi_token'];
+						process.env.slack_webhooks = tokens['slack_webhooks'];
+						process.env.german_token = tokens['german_token'];
+						process.env.mongodb_user = tokens['mongodb_user'];
+						process.env.mongodb_password = tokens['mongodb_password'];
+						resolve();
+					});
+				} else {
+					console.log("Use default environment variables. Tokens don't exist.");
+					resolve();
+				}
+			} catch(err) {
+				console.log("Use default environment variables. Error during processing.");
+				reject('Error during processing process environment');
+			}
 		});
-		// TODO[AKO]: repair in bug
-		// this.databaseService.findByCountry('Germany', (companiesGermany) => {
-		// 	companiesGermany.forEach(company => this.processCompany(company, this.request.requestForGermanStock, this.parser.parseQuandlResponse));
-		// 	this.databaseService.close();
-		// });
-
-
 	}
-
 }

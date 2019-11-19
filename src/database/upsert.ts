@@ -14,7 +14,12 @@ export class Upsert {
     public upsertCountry(countries: Array<JSON>, callbackFn: Function): void {
         countries.forEach(country => {
             console.log(`Starting processing for ${country['country']}`);
-            Country.findOneAndUpdate({country: country['country']}, {}, {upsert: true}, (err, dbCountry) => {
+            Country.findOneAndUpdate({
+                country: country['country']
+            }, {}, {
+                upsert: true,
+                new: true
+            }, (err, dbCountry) => {
                 if (!err) {
                     console.log(`Upsert country ${country['country']}`)
                     if (callbackFn) callbackFn.call(this, dbCountry);
@@ -32,7 +37,10 @@ export class Upsert {
                 code: company['code'],
                 name: company['name'],
                 country: country
-            }, {}, {upsert: true}, (err, dbCompany) => {
+            }, {}, {
+                upsert: true,
+                new: true
+            }, (err, dbCompany) => {
                 if (!err) {
                     console.log(`Upsert company ${company['name']}`)
                     if (callbackFn) callbackFn.call(this, dbCompany);
@@ -55,7 +63,10 @@ export class Upsert {
                     Promise.all(prices.map((price, index) => {
                         price['company'] = company;
                         console.log(`Processing ${index + 1}/${prices.length}`);
-                        return Price.findOneAndUpdate(price, {}, {upsert: true});
+                        return Price.findOneAndUpdate(price, {}, {
+                            upsert: true,
+                            new: true
+                        });
                     })).then( () => {
                         resolve();
                     }).catch( err => {

@@ -13,11 +13,19 @@ export class DatabaseService {
 			`@cluster0-iyhzw.mongodb.net/cheeki-breeki?retryWrites=true&w=majority`
 	}
 
-	public init(): void {
-		mongoose.connect(this.getDBUri(), { useUnifiedTopology: true, useNewUrlParser: true })
-		.then( () => console.log("Database connected successfully"))
-		.catch(err => console.error(`Error during initialize database ${err}`));
-		mongoose.Promise = global.Promise;
+	public init(): Promise<void> {
+		return new Promise<void>((resolve, reject) => {
+			mongoose.connect(this.getDBUri(), { useUnifiedTopology: true, useNewUrlParser: true })
+				.then( () => {
+					console.log("Database connected successfully");
+					mongoose.Promise = global.Promise;
+					resolve();
+				})
+				.catch(err => {
+					console.error(`Error during initialize database ${err}`);
+					reject(err);
+				});
+		});
 	}
 
 	public close(): void {

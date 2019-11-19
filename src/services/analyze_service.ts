@@ -1,4 +1,4 @@
-import { Metric }  from './utils/metrics';
+import { Metric }  from '../utils/metrics';
 
 export class AnalyzeService {
 
@@ -12,10 +12,6 @@ export class AnalyzeService {
 
 	constructor() {
 		this.metric = new Metric();
-	}
-
-	private checkIfAnyTrue(result: object): boolean{
-		return Object.keys(result).some( key => result[key]);
 	}
 	/**
 	 * Check if current value is in low group of yearly median values.
@@ -67,8 +63,7 @@ export class AnalyzeService {
 	}
 
  	public analizeCompany(allValues: Array<any>, todaysValue: object): object {
-
-		let result =  {
+		return  {
 				PRICE_MEDIAN_LOW: this.medianLowPercent(todaysValue, [...allValues]),
 				BOTTOM_INTER_MEAN: this.bottomIntersectionOfMean([...allValues]),
 				BOTTOM_INTER_MEAN_5_20: this.bottomIntersectionOfMean5And20([...allValues]),
@@ -78,11 +73,5 @@ export class AnalyzeService {
 				DAILY_FALL: this.dailyFall(todaysValue),
 				HOLE_IN_CHART: this.holeInChart([...allValues])
 			};
-
-
-		// TODO[AKO]: to remove when change logic of bots
-		result['anyLow'] = this.checkIfAnyTrue(result);
-
-		return result;
 	}
 }
