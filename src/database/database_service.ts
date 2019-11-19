@@ -11,8 +11,6 @@ export class DatabaseService {
 	private getDBUri(): string { 
 		return `mongodb+srv://${process.env.mongodb_user}:${process.env.mongodb_password}` +
 			`@cluster0-iyhzw.mongodb.net/cheeki-breeki?retryWrites=true&w=majority`
-
-			
 	}
 
 	public init(): void {
@@ -40,28 +38,17 @@ export class DatabaseService {
 		})
 	}
 
-	public findActiveCompanies(callback: Function): void {
-		Country.find({}, (err, countries) => {
-			countries.filter(o => o.active).forEach(country => {
-				Company.find({country: country}, (err, companies) => {
-					if (!err) {
-						callback.call(this, companies);
-					} else {
-						console.error('Error during looking for active companies');
-					}
-				});
-			});
+	public findActiveCompanies(): Promise<Array<Object>> {
+		return Country.find({}).then( countries => {
+			let activeCountries = countries.filter(o => o.active);
+			return Company.find({country: {$in: activeCountries}}).populate('country').exec();
+		}).catch( err => {
+			console.error(err);
 		});
 	}
 
-	public findPricesForCompanyAfterDate(company: Object, date: Date, callback: Function): void {
-		Price.find({"date": {"$gte": date}, company: company }, null, {"sort": {"date": -1}}, (err, prices) => {
-			if (!err) {
-				callback.call(this, prices);
-			} else {
-				console.error('Error during looking for prices');
-			}
-		});
+	public findPricesForCompanyAfterDate(company: Object, date: Date): Promise<Array<Object>> {
+		return Price.find({"date": {"$gte": date}, company: company }, null, {"sort": {"date": -1}});
 	}
 
 	public findEventsByDate(date: Date): Promise<Array<Object>> {

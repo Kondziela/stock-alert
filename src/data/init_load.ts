@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import {Upsert} from "../database/upsert";
 
 /**
+ * TODO[AKO]: REFACTOR TO USE PROMISSES LIKE BOTS
  * Script for initial load. Loads:
  *  - countries
  *  - companies
@@ -46,5 +47,5 @@ let loadCompaniesForCountry = (country) => {
 
 let loadHistoricalData = (company) => {
     // TODO[AKO]: adjust for another markets
-    upsert.upsertPricesForUSA(company, STARTING_DATE_FOR_PRICES);
+    upsert.upsertPrices(company, STARTING_DATE_FOR_PRICES);
 };

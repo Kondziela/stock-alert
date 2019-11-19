@@ -10,6 +10,10 @@ const PriceSchema = new mongoose.Schema({
 	company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' }
 },{ collection: 'prices' });
 
-const Price = mongoose.model('Price', PriceSchema);
-
+let Price;
+try {
+	Price = mongoose.model('Price');
+} catch (e) {
+	Price = mongoose.model('Price', PriceSchema);
+}
 export default Price;
