@@ -9,7 +9,7 @@
     "fs": "0.0.1-security",
     "junit": "^1.4.9",
     "ml-regression": "^5.0.0",
-    "mongoose": "^5.7.5",
+    "mongoose": "^5.7.11",
     "node-cron": "^2.0.3",
     "node-html-parser": "^1.1.16",
     "nodemailer": "^6.3.0",
@@ -21,12 +21,12 @@
   "devDependencies": {},
   "scripts": {
     "test": "junit test/*.js",
+    "tsc-watch": "tsc -w -p .",
     "start-local": "tsc; cp src/data/tokens.json dist/data; node dist/start.js",
     "schedule": "tsc; node dist/start.js",
     "start": "tsc; node dist/index.js",
     "start-once": "node src/main.js",
     "init-load": "tsc; cp src/data/tokens.json dist/data; cp -R src/data/json dist/data/; node dist/data/init_load.js",
-
     "run-price-bot": "tsc; cp src/data/tokens.json dist/data; node dist/start.js"
   },
   "repository": {

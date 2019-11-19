@@ -3,6 +3,8 @@ require('./schema/company');
 import Country from './schema/country';
 import Company from './schema/company';
 import Price from './schema/Price';
+import Event from './schema/event';
+import Activity from './schema/activity';
 
 export class DatabaseService {
 
@@ -14,7 +16,9 @@ export class DatabaseService {
 	}
 
 	public init(): void {
-		mongoose.connect(this.getDBUri(), { useUnifiedTopology: true, useNewUrlParser: true });
+		mongoose.connect(this.getDBUri(), { useUnifiedTopology: true, useNewUrlParser: true })
+		.then( () => console.log("Database connected successfully"))
+		.catch(err => console.error(`Error during initialize database ${err}`));
 		mongoose.Promise = global.Promise;
 	}
 
@@ -58,5 +62,16 @@ export class DatabaseService {
 				console.error('Error during looking for prices');
 			}
 		});
+	}
+
+	public findEventsByDate(date: Date): Promise<Array<Object>> {
+		return Event.find({date: date}).exec();
+	}
+
+	public findActivityByEvent(event: Object): Promise<Array<Object>> {
+		return Activity.find({event: event}).populate({
+			path: 'event',
+			populate: {path: 'company'}
+		}).exec();
 	}
 }
