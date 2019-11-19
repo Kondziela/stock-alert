@@ -34,7 +34,7 @@ export class Request {
     	return request(requestOptions);
     }
 
-    requestForGermanStock(company: string, startDate: string): Promise<string> {
+    public requestForGermanStock(company: string, startDate: string): Promise<string> {
         var options = {
           method: 'GET',
           url: Request.QUANDL_URL + `${company}?start_date=${startDate}&api_key=${process.env.german_token}`

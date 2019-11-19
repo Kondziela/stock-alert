@@ -1,17 +1,14 @@
 import Country from './schema/country';
 import Company from './schema/company';
-import Price from './schema/price';
-import {Request} from '../senders/request';
-import {Parser} from '../utils/parser';
+import Price from "./schema/price";
+import {ApiForMarket} from "../utils/api_for_market";
 
 export class Upsert {
 
-    private request: Request;
-    private parser: Parser;
+    private apiForMarket: ApiForMarket;
 
     constructor() {
-        this.request = new Request();
-        this.parser = new Parser();
+        this.apiForMarket = new ApiForMarket();
     }
 
     public upsertCountry(countries: Array<JSON>, callbackFn: Function): void {
@@ -46,26 +43,26 @@ export class Upsert {
         });
     }
 
-    public upsertPricesForUSA(company: Object, startDate: string, callbackFn?: Function): void {
+    public upsertPrices(company: Object, startDate: string): Promise<void> {
+        let apiFunctions = this.apiForMarket.getAPIFunctionForMarket(company['country']['country']);
 
-        new Request().requestForUSAStock(company['code'], startDate)
-            .then( data => {
-                let prices = this.parser.parseTiingoResponse(data);
+        return new Promise<void>( (resolve, reject) => {
+            apiFunctions['requestFn'].call(this, company['code'], startDate)
+                .then(data => {
+                    let prices = apiFunctions['parserFn'].call(this, data);
 
-                console.log(`For company ${company['name']} downloaded ${prices.length} prices`);
-                prices.forEach( (price, index) => {
-                    price['company'] = company;
-                    Price.findOneAndUpdate(price, {}, {upsert: true}, (err, dbPrice) => {
-                        if (!err) {
-                            console.log(`Upsert price for ${company['name']} ${index}/${prices.length}`);
-                            if (callbackFn) callbackFn.call(this);
-                        } else {
-                            console.error(`Error during price upsert ${err}`);
-                        }
+                    console.log(`For company ${company['name']} downloaded ${prices.length} prices`);
+                    Promise.all(prices.map((price, index) => {
+                        price['company'] = company;
+                        console.log(`Processing ${index + 1}/${prices.length}`);
+                        return Price.findOneAndUpdate(price, {}, {upsert: true});
+                    })).then( () => {
+                        resolve();
+                    }).catch( err => {
+                        reject(err);
                     });
                 });
-
-            });
+        });
     }
 
 }

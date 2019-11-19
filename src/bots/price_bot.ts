@@ -16,11 +16,13 @@ export class PriceBot {
      public run() {
          console.log("Start Price Bot");
          this.database.init();
-         this.database.findActiveCompanies( (companies) => {
-             companies.forEach( company => {
+         this.database.findActiveCompanies().then( (companies) => {
+             Promise.all(companies.map( company => {
                  console.log(`Download price for ${company['name']}`);
-                 // TODO[AKO]: adjust for another markets
-                 this.upsert.upsertPricesForUSA(company, this.util.today());
+                 return this.upsert.upsertPrices(company, this.util.today());
+             })).then( () => {
+                 console.log('End processing Price Bot');
+                 this.database.close();
              });
          });
      }

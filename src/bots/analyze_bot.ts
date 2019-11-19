@@ -24,38 +24,65 @@ export class AnalyzeBot {
     public run(): void {
         console.log("Start analyzing bot");
         this.databaseService.init();
-        this.databaseService.findActiveCompanies(companies => {
-            companies.forEach( companie => {
-                this.databaseService.findPricesForCompanyAfterDate(companie, new Date(this.util.oneYearAgo()), (prices) => {
-                    console.log(`Find prices for company ${companie['name']}`);
-                    this.countMetrics(companie, prices);
-                });
+
+        this.databaseService.findActiveCompanies().then( companies => {
+            Promise.all(companies.map( company => this.processPricesForCompany(company))).then( () => {
+                console.log('End of processing for Analyze bot');
+                this.databaseService.close();
+            }).catch( err => {
+                this.databaseService.close();
+                throw new Error(err);
             });
         });
     }
 
-    private countMetrics(company: any, allValues: Array<any>): void {
+
+    private processPricesForCompany(company: Object): Promise<void> {
+        return new Promise<void>( (resolve, reject) => {
+            this.databaseService.findPricesForCompanyAfterDate(company, new Date(this.util.oneYearAgo()))
+                .then( prices => {
+                    console.log(`Find prices for company ${company['name']}`);
+                    this.countMetrics(company, prices).then( () => {
+                        resolve();
+                    }).catch( err => reject(err));
+                }).catch( err => reject(err));
+        });
+    }
+
+    private countMetrics(company: any, allValues: Array<any>): Promise<void> {
         let todaysValue = allValues[0],
-            analize = this.analyzeService.analizeCompany([...allValues], todaysValue);
+            analize = this.analyzeService.analizeCompany([...allValues], todaysValue),
+            analyzeKeys = Object.keys(analize).filter(key => analize[key]);
 
         console.log(`Count metrics for company ${company.name}`);
-        Object.keys(analize).filter(key => analize[key]).forEach(key => {
-             Event.findOneAndUpdate({
-                 company: company,
-                 date: new Date(this.util.today()),
-                 type: EventType.ACTIVITY
-             }, {}, {upsert: true}, (err, event) => {
-                 if (!err) {
-                     Activity.findOneAndUpdate({
-                         type: ActivityType[key],
-                         event: event,
-                         price: todaysValue
-                     }, {}, {upsert: true}, (err) => {
-                         if (!err) console.log(`Created event and activity for company ${company['name']}: ${ActivityType[key]}`);
-                         else console.error(err);
-                     });
-                 } else console.error(err);
-             });
+        return new Promise<void>( (resolve, reject) => {
+            if (!analyzeKeys.length) {
+                resolve();
+            }
+            analyzeKeys.forEach(key => {
+                this.upertEvent(company).then( event => {
+                        this.upsertActivity(event, todaysValue, key).then( () => {
+                            console.log(`Created event and activity for company ${company['name']}: ${ActivityType[key]}`);
+                            resolve();
+                        }).catch( err => reject(err));
+                }).catch( err => reject(err));
+            });
         });
+    }
+
+    private upertEvent(company: Object): Promise<Object> {
+        return Event.findOneAndUpdate({
+            company: company,
+            date: new Date(this.util.today()),
+            type: EventType.ACTIVITY
+        }, {}, {upsert: true});
+    }
+
+    private upsertActivity(event: Object, price: Object, key: string): Promise<Object> {
+        return Activity.findOneAndUpdate({
+            type: ActivityType[key],
+            event: event,
+            price: price
+        }, {}, {upsert: true});
     }
 }
