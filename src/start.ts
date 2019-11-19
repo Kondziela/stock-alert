@@ -1,6 +1,5 @@
 import { Main } from './main';
 import * as fs from 'fs';
-import {SendingBot} from "./bots/send_bot";
 
 const path = __dirname + '/data/tokens.json'
 
@@ -16,8 +15,7 @@ try {
         process.env.german_token = tokens['german_token'];
         process.env.mongodb_user = tokens['mongodb_user'];
         process.env.mongodb_password = tokens['mongodb_password'];
-        new SendingBot().run();
-        //new Main().mainProcess();
+        new Main().mainProcess();
     });
   } else {
       console.log("Use default environment variables. Tokens don't exist.");
