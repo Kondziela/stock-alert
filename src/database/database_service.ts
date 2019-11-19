@@ -16,7 +16,9 @@ export class DatabaseService {
 	}
 
 	public init(): void {
-		mongoose.connect(this.getDBUri(), { useUnifiedTopology: true, useNewUrlParser: true });
+		mongoose.connect(this.getDBUri(), { useUnifiedTopology: true, useNewUrlParser: true })
+		.then( () => console.log("Database connected successfully"))
+		.catch(err => console.error(`Error during initialize database ${err}`));
 		mongoose.Promise = global.Promise;
 	}
 
@@ -63,10 +65,13 @@ export class DatabaseService {
 	}
 
 	public findEventsByDate(date: Date): Promise<Array<Object>> {
-		return Event.find({date: date}).populate('company');
+		return Event.find({date: date}).exec();
 	}
 
 	public findActivityByEvent(event: Object): Promise<Array<Object>> {
-		return Activity.find({event: event});
+		return Activity.find({event: event}).populate({
+			path: 'event',
+			populate: {path: 'company'}
+		}).exec();
 	}
 }
