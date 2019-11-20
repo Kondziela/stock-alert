@@ -48,18 +48,18 @@ export class AnalyzeBot {
     }
 
     private countMetrics(company: any, allValues: Array<any>): Promise<void> {
-        let todaysValue = allValues[0],
-            analize = this.analyzeService.analizeCompany([...allValues], todaysValue),
+        let theNewestValue = allValues[0],
+            analize = this.analyzeService.analizeCompany([...allValues], theNewestValue),
             analyzeKeys = Object.keys(analize).filter(key => analize[key]);
 
-        console.log(`Count metrics for company ${company.name}`);
+        console.log(`Count metrics for company ${company.name} for date ${theNewestValue['date']}`);
         return new Promise<void>( (resolve, reject) => {
             if (!analyzeKeys.length) {
                 resolve();
             }
             analyzeKeys.forEach(key => {
-                this.upsertEvent(company).then( event => {
-                        this.upsertActivity(event, todaysValue, key).then( () => {
+                this.upsertEvent(company, theNewestValue['date']).then( event => {
+                        this.upsertActivity(event, theNewestValue, key).then( () => {
                             console.log(`Created event and activity for company ${company['name']}: ${ActivityType[key]}`);
                             resolve();
                         }).catch( err => reject(err));
@@ -68,10 +68,10 @@ export class AnalyzeBot {
         });
     }
 
-    private upsertEvent(company: Object): Promise<Object> {
+    private upsertEvent(company: Object, date: Date): Promise<Object> {
         return Event.findOneAndUpdate({
             company: company,
-            date: new Date(this.util.today()),
+            date: date,
             type: EventType.ACTIVITY
         }, {}, {
             upsert: true,

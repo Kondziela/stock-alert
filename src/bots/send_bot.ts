@@ -24,7 +24,8 @@ export class SendingBot {
             this.database.findEventsByDate(new Date(this.util.today())).then((events) => {
                 console.log(`Number of processing events: ${events.length}`);
                 Promise.all(events.map(event => this.database.findActivityByEvent(event))).then((activities: Array<Array<Object>>) => {
-                    let companyActivities = this.groupByCompany(activities.reduce((a, b) => a.concat(b))),
+                    let activitiesArray = activities.length ? (activities.reduce((a, b) => a.concat(b))) : [],
+                        companyActivities = this.groupByCompany(activitiesArray),
                         slackResponse = this.userService.slackResponse(companyActivities);
 
                     console.log(slackResponse);
