@@ -4,7 +4,7 @@ import {SendingBot} from "./bots/send_bot";
 import {AnalyzeBot} from "./bots/analyze_bot";
 import * as fs from "fs";
 
-export class Main {
+export class MainBot {
 
 	private priceBot: PriceBot;
 	private analyzeBot: AnalyzeBot;

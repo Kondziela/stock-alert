@@ -1,9 +1,10 @@
 import {DatabaseService} from '../database/database_service';
 import * as fs from 'fs';
+import * as path from 'path';
 import {Upsert} from "../database/upsert";
+import {MainBot} from "../main_bot";
 
 /**
- * TODO[AKO]: REFACTOR TO USE PROMISSES LIKE BOTS
  * Script for initial load. Loads:
  *  - countries
  *  - companies
@@ -11,41 +12,49 @@ import {Upsert} from "../database/upsert";
  * 
  * WARNIGN: not all companies have all historical data in Tiingo e.g. DELL.
  */
-const STARTING_DATE_FOR_PRICES = '2014-01-01';
-const upsert = new Upsert();
-const database = new DatabaseService();
+export class InitLoad {
+    private STARTING_DATE_FOR_PRICES = '2014-01-01';
+    private upsert: Upsert;
+    private database: DatabaseService;
+    private main: MainBot;
 
-fs.readFile(__dirname + '/tokens.json', 'utf-8', (err, data) => {
-    let tokens = JSON.parse(data.toString());
-    process.env.tiingi_token = tokens['tiingi_token'];
-    process.env.slack_webhooks = tokens['slack_webhooks'];
-    process.env.german_token = tokens['german_token'];
-    process.env.mongodb_user = tokens['mongodb_user'];
-    process.env.mongodb_password = tokens['mongodb_password'];
-    initLoad();
-});
+    constructor() {
+        this.upsert = new Upsert();
+        this.database = new DatabaseService();
+        this.main = new MainBot();
+    }
 
-let initLoad = () => {
-    database.init();
+    public run() {
+        this.main.initEnvironmentVariables()
+            .then( () => this.database.init())
+            .then( () => this.loadCountries())
+            .then( (countries) => this.loadCompanies(countries))
+            .then( (companies) => this.loadHistoricalDate(companies))
+            .then( () => this.database.close())
+            .catch( (err) => console.error(err));
+    }
 
-    loadCountries();
+    private loadCountries(): Promise<Object[]> {
+        let countries = JSON.parse(fs.readFileSync(path.join(__dirname, 'json', 'countries.json'), 'utf-8').toString())
 
-    // close db connection
-};
+        return this.upsert.upsertCountry(countries);
+    }
 
-let loadCountries = () => {
-    let countries = JSON.parse(fs.readFileSync(__dirname + '/json/countries.json', 'utf-8').toString())
+    private loadCompanies(countries: Object[]): Promise<Object[][]> {
+        let countriesList = countries.filter( o => o['active']);
+        return Promise.all(countriesList.map( country => this.loadCompaniesForCountry(country)));
+    }
 
-    upsert.upsertCountry(countries, loadCompaniesForCountry);
-};
+    private loadCompaniesForCountry(country): Promise<Object[]> {
+        let companies = JSON.parse(fs.readFileSync(path.join(__dirname,'json', `companies${country.country}.json`)).toString());
 
-let loadCompaniesForCountry = (country) => {
-    let companies = JSON.parse(fs.readFileSync(__dirname + `/json/companies${country.country}.json`).toString());
+        return this.upsert.upsertCompanies(country, companies);
+    }
 
-    upsert.upsertCompanies(country, companies, loadHistoricalData);
-};
-
-let loadHistoricalData = (company) => {
-    // TODO[AKO]: adjust for another markets
-    upsert.upsertPrices(company, STARTING_DATE_FOR_PRICES);
-};
+    private loadHistoricalDate(companies: Array<Array<Object>>): Promise<void[]> {
+        let companiesList = companies.length ? companies.reduce( (a, b) => a.concat(b)) : [];
+        return Promise.all(companiesList.map(company => {
+            this.upsert.upsertPrices(company, this.STARTING_DATE_FOR_PRICES)
+        }));
+    }
+}

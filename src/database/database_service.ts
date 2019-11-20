@@ -15,7 +15,7 @@ export class DatabaseService {
 
 	public init(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
-			mongoose.connect(this.getDBUri(), { useUnifiedTopology: true, useNewUrlParser: true })
+			mongoose.connect(this.getDBUri(), { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: true })
 				.then( () => {
 					console.log("Database connected successfully");
 					mongoose.Promise = global.Promise;
@@ -30,20 +30,6 @@ export class DatabaseService {
 
 	public close(): void {
 		mongoose.connection.close();
-	}
-
-	public findByCountry(country: string, callback: any): void {
-		Country.findOne({"country": country}, (err, dbCountry) => {
-			Company.find({"country": dbCountry}, (err, companies) => {
-				console.log("Company by country: ", companies['name']);
-				if (!err) {
-					callback.call(this, companies);
-				} else {
-					console.log("Database connection error", err);
-				}
-			});
-			
-		})
 	}
 
 	public findActiveCompanies(): Promise<Array<Object>> {
