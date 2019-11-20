@@ -1,8 +1,10 @@
 [
     {
-        "country": "USA"
+        "country": "USA",
+        "active": true
     },
     {
-        "country": "Germany"
+        "country": "Germany",
+        "active": false
     }
 ]

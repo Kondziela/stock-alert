@@ -1,6 +1,6 @@
-import { Main } from './main';
+import { MainBot } from './main_bot';
 
-let main = new Main();
+let main = new MainBot();
 
 console.log('Start Scheduler');
 

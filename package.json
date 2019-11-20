@@ -13,6 +13,7 @@
     "node-cron": "^2.0.3",
     "node-html-parser": "^1.1.16",
     "nodemailer": "^6.3.0",
+    "path": "^0.12.7",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "slack-node": "^0.1.8",
@@ -22,12 +23,10 @@
   "scripts": {
     "test": "junit test/*.js",
     "tsc-watch": "tsc -w -p .",
-    "start-local": "tsc; cp src/data/tokens.json dist/data; node dist/start.js",
-    "schedule": "tsc; node dist/start.js",
-    "start": "tsc; node dist/index.js",
-    "start-once": "node src/main.js",
-    "init-load": "tsc; cp src/data/tokens.json dist/data; cp -R src/data/json dist/data/; node dist/data/init_load.js",
-    "run-price-bot": "tsc; cp src/data/tokens.json dist/data; node dist/start.js"
+    "start-local": "tsc; cp src/data/tokens.json dist/data; node dist/start_bots.js",
+    "schedule": "tsc; node dist/start_bots.js",
+    "start": "tsc; node dist/run_server.js",
+    "init-load": "tsc; cp src/data/tokens.json dist/data; cp -R src/data/json dist/data/; node dist/start_init_load.js"
   },
   "repository": {
     "type": "git",

@@ -10,7 +10,7 @@
       "src/**/*.ts",
       "src/**/**/*.ts",
       "src/**/**/**/*.ts",
-      "src/start.ts",
+      "src/start_bots.ts",
       "src/data/tokens.json"
     ],
     "exclude": [

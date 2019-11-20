@@ -11,44 +11,34 @@ export class Upsert {
         this.apiForMarket = new ApiForMarket();
     }
 
-    public upsertCountry(countries: Array<JSON>, callbackFn: Function): void {
-        countries.forEach(country => {
-            console.log(`Starting processing for ${country['country']}`);
-            Country.findOneAndUpdate({
-                country: country['country']
-            }, {}, {
-                upsert: true,
-                new: true
-            }, (err, dbCountry) => {
-                if (!err) {
-                    console.log(`Upsert country ${country['country']}`)
-                    if (callbackFn) callbackFn.call(this, dbCountry);
-                } else {
-                    console.error(`Error during upsert country ${err}`);
-                }
+    public upsertCountry(countries: Array<JSON>): Promise<Object[]> {
+        return Promise.all(countries.map(country => {
+                console.log(`Starting processing for ${country['country']}`);
+                return Country.findOneAndUpdate({
+                    country: country['country']
+                }, {}, {
+                    upsert: true,
+                    new: true
+                }).exec()
             })
-        });
+        );
     }
 
-    public upsertCompanies(country: Object, companies: Array<JSON>, callbackFn: Function): void {
-        companies.forEach(company => {
-            console.log(`Starting processing for ${company['name']}`)
-            Company.findOneAndUpdate({
-                code: company['code'],
-                name: company['name'],
-                country: country
-            }, {}, {
-                upsert: true,
-                new: true
-            }, (err, dbCompany) => {
-                if (!err) {
-                    console.log(`Upsert company ${company['name']}`)
-                    if (callbackFn) callbackFn.call(this, dbCompany);
-                } else {
-                    console.error(`Error during upsert company ${err}`);
-                }
-            });
-        });
+    public upsertCompanies(country: Object, companies: Array<JSON>): Promise<Object[]> {
+        return Promise.all(companies.map(company => {
+            console.log(`Starting processing for ${company['name']}`);
+                return Company.findOneAndUpdate({
+                    code: company['code'],
+                    name: company['name'],
+                    country: country
+                }, {}, {
+                    upsert: true,
+                    new: true
+                })
+                .populate('country')
+                .exec()
+            })
+        );
     }
 
     public upsertPrices(company: Object, startDate: string): Promise<void> {
@@ -60,18 +50,14 @@ export class Upsert {
                     let prices = apiFunctions['parserFn'].call(this, data);
 
                     console.log(`For company ${company['name']} downloaded ${prices.length} prices`);
-                    Promise.all(prices.map((price, index) => {
+                    return Promise.all(prices.map((price, index) => {
                         price['company'] = company;
                         console.log(`Processing ${index + 1}/${prices.length}`);
                         return Price.findOneAndUpdate(price, {}, {
                             upsert: true,
                             new: true
-                        });
-                    })).then( () => {
-                        resolve();
-                    }).catch( err => {
-                        reject(err);
-                    });
+                        }).exec();
+                    }));
                 });
         });
     }

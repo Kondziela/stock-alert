@@ -76,7 +76,7 @@ export class AnalyzeBot {
         }, {}, {
             upsert: true,
             new: true
-        });
+        }).exec();
     }
 
     private upsertActivity(event: Object, price: Object, key: string): Promise<Object> {
@@ -87,6 +87,6 @@ export class AnalyzeBot {
         }, {}, {
             upsert: true,
             new: true
-        });
+        }).exec();
     }
 }
