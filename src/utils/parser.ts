@@ -28,24 +28,15 @@ export class Parser {
 		      "Daily Traded Units",
 		      "Daily Turnover"
 	*/
-	// TODO[AKO]: REPAIR ME!!!
-	public parseQuandlResponse(body: string): Array<object> {
-		return [];
-		// let lines = htmlParser.parse(body, {pre: true}).querySelector('pre').firstChild.rawText.split('\n');
-
-        // lines[0] = '{';
-        // lines[lines.length - 1] = '}';
-
-        // let json = JSON.parse(lines.join('\n'));
-
-        // return json.dataset.data.map( object => {return {
-        // 	'date': object[0],
-		// 	'close': object[4],
-		// 	'high': object[2],
-		// 	'low': object[3],
-		// 	'open': object[1],
-		// 	'volume': object[6]
-        // }});
+	public parseQuandlResponse(data: string): Array<object> {
+        return JSON.parse(data)['dataset']['data'].map( object => {return {
+        	'date': object[0],
+			'close': object[4],
+			'high': object[2],
+			'low': object[3],
+			'open': object[1],
+			'volume': object[6]
+        }});
 	}
 
 }
