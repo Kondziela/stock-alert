@@ -14,4 +14,9 @@
 	public findTodayObject(allValues: any, date: string): object {
 		return allValues.reduce( (o1, o2) => o1.date == date ? o1 : o2 );
 	}
+
+	public isDateToday(date: Date): boolean {
+	 	let today = new Date();
+	 	return date.getDate() === today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() === today.getFullYear();
+	}
 }

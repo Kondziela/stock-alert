@@ -17,12 +17,13 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "slack-node": "^0.1.8",
+    "twit": "^2.2.11",
     "typescript": "^3.7.2"
   },
   "devDependencies": {},
   "scripts": {
     "test": "junit test/*.js",
-    "tsc-watch": "tsc -w -p .",
+    "watch": "tsc -w -p .",
     "start-local": "tsc; cp src/data/tokens.json dist/data; node dist/start_bots.js",
     "schedule": "tsc; node dist/start_bots.js",
     "start": "tsc; node dist/run_server.js",

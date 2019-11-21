@@ -3,6 +3,7 @@ import {PriceBot} from "./bots/price_bot";
 import {SendingBot} from "./bots/send_bot";
 import {AnalyzeBot} from "./bots/analyze_bot";
 import * as fs from "fs";
+import * as path from 'path';
 
 export class MainBot {
 
@@ -32,18 +33,26 @@ export class MainBot {
 
 	public initEnvironmentVariables(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
-			const path = __dirname + '/data/tokens.json';
+			const tokenPath = path.join(__dirname, 'data', 'tokens.json');
 
 			try {
-				if (fs.existsSync(path)) {
+				if (fs.existsSync(tokenPath)) {
 					console.log('Token exist');
-					fs.readFile(path, 'utf-8', (err, data) => {
+					fs.readFile(tokenPath, 'utf-8', (err, data) => {
 						let tokens = JSON.parse(data.toString());
+						// Access to Stock Trade API
 						process.env.tiingi_token = tokens['tiingi_token'];
-						process.env.slack_webhooks = tokens['slack_webhooks'];
 						process.env.german_token = tokens['german_token'];
+						// Slack settings
+						process.env.slack_webhooks = tokens['slack_webhooks'];
+						// MongoDB setting
 						process.env.mongodb_user = tokens['mongodb_user'];
 						process.env.mongodb_password = tokens['mongodb_password'];
+						// Twitter settings
+						process.env.consumer_key = tokens['consumer_key'];
+						process.env.consumer_secret = tokens['consumer_secret'];
+						process.env.access_token = tokens['access_token'];
+						process.env.access_token_secret = tokens['access_token_secret'];
 						resolve();
 					});
 				} else {
