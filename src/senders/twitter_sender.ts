@@ -3,25 +3,22 @@ import {Util} from "../utils/util";
 
 export class TwitterSender {
 
-    private config = {
-        consumer_key: 'R4Cgv4Voxi46YVjKxXni5ielH',
-        consumer_secret: '2BvH0p9LADXGguz3g3yaoWcRiZtbCSi9RAaJzAhoAdQZSABN5T',
-        access_token: '861963361302581248-5oPq0YPjooUTzGypSGiax2g84iFk2sj',
-        access_token_secret: '8ydygeHzy2HCQJYQ2vhVTlpnl6fHABKvuY5BQbGblYkB0'
-    };
-
     private client: Twit;
     private util: Util;
 
     constructor() {
         this.util = new Util();
-        this.client = new Twit(this.config);
+        console.log(`Consumer key ${process.env.consumer_key}`);
+        this.client = new Twit({
+            consumer_key: process.env.consumer_key,
+            consumer_secret: process.env.consumer_secret,
+            access_token: process.env.access_token,
+            access_token_secret: process.env.access_token_secret
+        });
     }
 
-    // TODO[AKO]: repair fetching of twits
     public search(searchConfig: Object): Promise<any> {
-        searchConfig['count'] = 2;
-        console.log(`Twitter search config: ${searchConfig['max_id']}`);
+        searchConfig['count'] = 100;
 
         return new Promise<Object>( (resolve) => {
             this.client.get('search/tweets', searchConfig, (error, tweets) => {
@@ -33,7 +30,8 @@ export class TwitterSender {
                     if (isToday) {
                         let nextId = this.decreaseByOne(this.getLastId(convertedTweets));
                         console.log(convertedTweets, 'Next', nextId);
-                        this.search(Object.assign({max_id: nextId}, searchConfig)).then( newTweets => {
+                        searchConfig['max_id'] = nextId;
+                        this.search(searchConfig).then( newTweets => {
                             resolve(convertedTweets.concat(newTweets));
                         });
                     } else {
@@ -43,16 +41,6 @@ export class TwitterSender {
             });
         });
     }
-    private getNextIdFromTweets(tweets: Object): String {
-        let map = {},
-            nextResultsURL = tweets['search_metadata']['next_results'];
-        nextResultsURL.substring(1).split('&').forEach( pair => {
-            let splitPair = pair.split('=');
-            map[splitPair[0]] = splitPair[1];
-        });
-        return map['max_id'];
-    }
-
 
     private getLastId(tweets: Array<Object>): String {
         return this.getLastTweet(tweets)['id'];
@@ -97,7 +85,3 @@ export class TwitterSender {
         return digitals.join('');
     }
 }
-
-new TwitterSender().search({ q: '#cdr', lang: 'en'}).then( tweets => {
-    console.log(tweets);
-});
