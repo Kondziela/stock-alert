@@ -17,6 +17,22 @@ export class TwitterSender {
         });
     }
 
+    public createStream() {
+        let stream = this.client.stream('statuses/filter', { track: ['#cdr', '@cdr', '#amazon', '#AWS'], lang: 'en', tweet_mode: 'full_text'}),
+            me = this;
+
+        console.log('Creating stream...');
+        stream.on('tweet', function (tweet) {
+            console.log(me.convertTweet(tweet));
+        });
+        stream.on('connect', function (requst) {
+             console.log('Connect');
+        });
+        stream.on('reconnect', function (request, response, connectInterval) {
+             console.log('reconnect');
+        });
+    }
+
     public search(searchConfig: Object): Promise<any> {
         searchConfig['count'] = 100;
 
@@ -61,11 +77,22 @@ export class TwitterSender {
     }
 
     private convertTweets(tweets: Object): Array<Object> {
-        return tweets['statuses'].map( tweet => {return {
+        return tweets['statuses'].map( tweet => this.convertTweet(tweet));
+    }
+
+    private convertTweet(tweet: Object): Object {
+        let extendedTweet = tweet['extended_tweet'];
+
+        console.log(tweet);
+
+        return {
             date: new Date(tweet['created_at']),
             text: tweet['text'],
-            id: tweet['id_str']
-        }});
+            id: tweet['id_str'],
+            hashtags: tweet['entities']['hashtags'],
+            user_mentions: tweet['entities']['user_mentions'].map( user => user['name']),
+            full_text: tweet['full_text']
+        };
     }
 
     private decreaseByOne(id: String): String {
