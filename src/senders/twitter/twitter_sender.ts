@@ -1,22 +1,18 @@
 import * as Twit from 'twit';
-import {Util} from "../utils/util";
+import {Util} from "../../utils/util";
 import * as Sentiment from 'sentiment';
+import {TwitterSuit} from "./twitter_suit";
 
-export class TwitterSender {
+export class TwitterSender extends TwitterSuit {
 
     private client: Twit;
     private util: Util;
     private sentiment: Sentiment;
-    private companyMap: Object;
 
     constructor() {
+        super();
         this.util = new Util();
         this.sentiment = new Sentiment();
-        this.companyMap = {
-            Facebook: ['facebook'],
-            Apple: ['apple', 'iphone'],
-            Amazon: ['amazon', 'aws']
-        };
         this.client = new Twit({
             consumer_key: process.env.consumer_key,
             consumer_secret: process.env.consumer_secret,
@@ -24,60 +20,6 @@ export class TwitterSender {
             access_token_secret: process.env.access_token_secret
         });
     }
-
-    public createStream() {
-        let stream = this.client.stream('statuses/filter', { 
-            track: ['#facebook', '#apple', '#amazon', '#AWS'], 
-            language: 'en', 
-            tweet_mode: 'extended'
-        }),
-            me = this;
-
-        console.log('Creating stream...');
-        stream.on('tweet', function (originalTweet) {
-            let tweet = me.convertTweet(originalTweet);
-            console.log(tweet);
-            let companies = me.findCompanies([...tweet['hashtags']]);
-            console.log('Companies: ', companies);
-            let analyze = me.sentiment.analyze(tweet['text']);
-            console.log('Analyze of sentiment', analyze['score']);
-        });
-        stream.on('connect', function (requst) {
-             console.log('Connect');
-        });
-        stream.on('reconnect', function (request, response, connectInterval) {
-             console.log('Reconnect');
-        });
-    }
-
-    private findCompanies(hashtagList): Array<String> {
-        let me = this;
-        return Object.keys(this.companyMap)
-            .filter( (company) => {
-                return hashtagList.some(hashtag => this.companyMap[company].includes(hashtag.toLowerCase()))
-            });
-    }
-
-    private convertTweet(tweet: Object): {date: Date, text: String, id: number, hashtags: Array<String>, user_mentions: Array<String>} {
-        let extendedTweet = tweet['retweeted_status'] ? tweet['retweeted_status']['extended_tweet'] : tweet['extended_tweet'],
-            text = tweet['truncated'] ? extendedTweet['full_text'] : tweet['text'];
-
-        if (!extendedTweet && tweet['truncated'] ) {
-            console.log(tweet);
-            throw new Error('Unhandle tweet');
-        }
-
-        return {
-            date: new Date(tweet['created_at']),
-            text: text,
-            id: tweet['id_str'],
-            hashtags: tweet['entities']['hashtags'].map( hashtag => hashtag['text']),
-            user_mentions: tweet['entities']['user_mentions'].map( user => user['name'])
-        }
-    }
-
-    // SEARCH FUNCTION
-    // NOT USE IN APPLICATION
 
     public search(searchConfig: Object): Promise<any> {
         searchConfig['count'] = 100;

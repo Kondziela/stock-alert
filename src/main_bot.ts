@@ -4,17 +4,20 @@ import {SendingBot} from "./bots/send_bot";
 import {AnalyzeBot} from "./bots/analyze_bot";
 import * as fs from "fs";
 import * as path from 'path';
+import {TwitterStreamBot} from "./bots/twitter_stream_bot";
 
 export class MainBot {
 
 	private priceBot: PriceBot;
 	private analyzeBot: AnalyzeBot;
 	private sendingBot: SendingBot;
+	private twitterStreamBot: TwitterStreamBot;
 	private databaseService: DatabaseService;
 
 	constructor() {
 		this.priceBot = new PriceBot();
 		this.analyzeBot = new AnalyzeBot();
+		this.twitterStreamBot = new TwitterStreamBot();
 		this.sendingBot = new SendingBot();
 		this.databaseService = new DatabaseService();
 	}
@@ -31,7 +34,12 @@ export class MainBot {
 				.catch(err => console.error(err));
 	}
 
-	public initEnvironmentVariables(): Promise<void> {
+	public startTwitterStreamBot(): void {
+		this.databaseService.init()
+			.then(() => this.twitterStreamBot.run());
+	}
+
+	public static initEnvironmentVariables(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			const tokenPath = path.join(__dirname, 'data', 'tokens.json');
 

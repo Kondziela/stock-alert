@@ -5,6 +5,7 @@ import Company from './schema/company';
 import Price from './schema/price';
 import Event from './schema/event';
 import Activity from './schema/activity';
+import Hashtag from './schema/hashtag';
 
 export class DatabaseService {
 
@@ -15,6 +16,7 @@ export class DatabaseService {
 
 	public init(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
+			console.log('Initializing database...');
 			mongoose.connect(this.getDBUri(), { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: true })
 				.then( () => {
 					console.log("Database connected successfully");
@@ -54,5 +56,9 @@ export class DatabaseService {
 			path: 'event',
 			populate: {path: 'company'}
 		}).exec();
+	}
+
+	public findHashtagsWithCompany(): Promise<Array<Object>> {
+		return Hashtag.find({}).populate('company').exec();
 	}
 }
