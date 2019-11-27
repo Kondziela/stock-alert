@@ -6,6 +6,7 @@ import Price from './schema/price';
 import Event from './schema/event';
 import Activity from './schema/activity';
 import Hashtag from './schema/hashtag';
+import TweetBuff from './schema/tweet_buff';
 
 export class DatabaseService {
 
@@ -61,4 +62,20 @@ export class DatabaseService {
 	public findHashtagsWithCompany(): Promise<Array<Object>> {
 		return Hashtag.find({}).populate('company').exec();
 	}
+
+	public processTweetAndInformIfNotExist(tweetBuff): Promise<void> {
+	    return new Promise<void>( (resolve, reject) => {
+            TweetBuff.findOne(tweetBuff).exec()
+                .then((data) => {
+                    if (data) {
+                        console.log('Found in buff');
+                        reject('Tweet exists in buff');
+                    } else {
+                        console.log('Didn\'t find in buff');
+                        TweetBuff.create(tweetBuff);
+                        return resolve();
+                    }
+                });
+        });
+    }
 }
