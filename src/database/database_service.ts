@@ -6,7 +6,9 @@ import Price from './schema/price';
 import Event from './schema/event';
 import Activity from './schema/activity';
 import Hashtag from './schema/hashtag';
+import Tweet from './schema/tweet';
 import TweetBuff from './schema/tweet_buff';
+import { TwitterType } from './twitter_type';
 
 export class DatabaseService {
 
@@ -60,7 +62,7 @@ export class DatabaseService {
 	}
 
 	public findHashtagsWithCompany(): Promise<Array<Object>> {
-		return Hashtag.find({}).populate('company').exec();
+		return Hashtag.find({type: TwitterType.HASHTAG}).populate('company').exec();
 	}
 
 	public processTweetAndInformIfNotExist(tweetBuff): Promise<void> {
@@ -77,5 +79,9 @@ export class DatabaseService {
                     }
                 });
         });
-    }
+	}
+	
+	public findTweetAggregateForCompanyAndDate(company: Object, date: Date): Promise<Object> {
+		return Tweet.findOne({company: company, date: date}).exec();
+	}
 }

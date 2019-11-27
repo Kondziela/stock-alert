@@ -11,7 +11,9 @@ export class TwitterStreamBot {
     }
 
     public run() {
+        console.log('Starting Twitter Stream Bot');
         this.database.findHashtagsWithCompany().then(hashtagList => {
+            console.log(`Bot will process ${hashtagList.length} hashtags`);
             this.twitterStream = new TwitterStream(this.groupHashtagsByCompanies(hashtagList));
             this.twitterStream.createStream(hashtagList.map(hashtag => `#${hashtag['hashtag']}`));
         });
@@ -20,11 +22,11 @@ export class TwitterStreamBot {
     private groupHashtagsByCompanies(hashtagList: Array<Object>): Object {
         let map = {};
         for (let hashtag of hashtagList) {
-            let companyName = hashtag['company']['name'];
-            if (!map[companyName]) {
-                map[companyName] = [];
+            let company = JSON.stringify(hashtag['company']);
+            if (!map[company]) {
+                map[company] = [];
             }
-            map[companyName].push(hashtag['hashtag'])
+            map[company].push(hashtag['hashtag'])
         }
         return map;
     }

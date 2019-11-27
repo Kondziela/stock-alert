@@ -4,7 +4,7 @@ let main = new MainBot();
 
 console.log('Start Scheduler');
 
-main.initEnvironmentVariables()
+MainBot.initEnvironmentVariables()
     .then(() => main.startProcessing())
     .catch(err => console.error(err));
 
