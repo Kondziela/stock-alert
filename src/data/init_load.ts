@@ -25,7 +25,7 @@ export class InitLoad {
     }
 
     public run() {
-        this.main.initEnvironmentVariables()
+        MainBot.initEnvironmentVariables()
             .then( () => this.database.init())
             .then( () => this.loadCountries())
             .then( (countries) => this.loadCompanies(countries))
@@ -56,5 +56,12 @@ export class InitLoad {
         return Promise.all(companiesList.map(company => {
             this.upsert.upsertPrices(company, this.STARTING_DATE_FOR_PRICES)
         }));
+    }
+
+    public loadHashtags() {
+        this.database.init().then( () => { 
+            let hashtags = JSON.parse(fs.readFileSync(path.join(__dirname, 'json', 'hashtags.json')).toString());
+            this.upsert.upsertHashtags(hashtags);
+        });
     }
 }

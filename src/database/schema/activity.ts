@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import {ActivityType} from "../../bots/activity_type";
+import {ActivityType} from "../activity_type";
 
 var ActivitySchema = new mongoose.Schema({
 	type: {

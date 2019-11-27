@@ -1,4 +1,4 @@
-import {ActivityType} from "../bots/activity_type";
+import {ActivityType} from "../database/activity_type";
 import {Util} from "../utils/util";
 
 export class UserService {

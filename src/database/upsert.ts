@@ -1,7 +1,9 @@
 import Country from './schema/country';
 import Company from './schema/company';
 import Price from "./schema/price";
+import Hashtag from './schema/hashtag';
 import {ApiForMarket} from "../utils/api_for_market";
+import { TwitterType } from './twitter_type';
 
 export class Upsert {
 
@@ -59,6 +61,30 @@ export class Upsert {
                         }).exec();
                     }));
                 });
+        });
+    }
+
+    // TODO[AKO]: should be integrated with rest of init load logic
+    public upsertHashtags(hashtags: Array<Object>) {
+        Company.find({}).exec().then(companies => {
+            companies.forEach( company => {
+                let hashtag = hashtags.find(h => h['company'].toLowerCase() === company['name'].toLowerCase());
+                if (!hashtag) {
+                    console.error(`No data for company ${company['name']}`);
+                    return;
+                }
+                console.log(`Hashtags for company ${company['name']}: ${hashtag}`);
+                hashtag['hashtags'].forEach(h => {
+                    Hashtag.findOneAndUpdate({
+                        company: company,
+                        hashtag: h,
+                        type: TwitterType.HASHTAG
+                    }, {}, {
+                        upsert: true, 
+                        new: true
+                    }).exec();
+                });
+            });
         });
     }
 

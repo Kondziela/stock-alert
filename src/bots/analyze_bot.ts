@@ -4,8 +4,8 @@ import { AnalyzeService } from '../services/analyze_service';
 import { DatabaseService } from '../database/database_service';
 import Event from '../database/schema/event';
 import Activity from '../database/schema/activity';
-import {ActivityType} from "./activity_type";
-import {EventType} from "./EventType";
+import {ActivityType} from "../database/activity_type";
+import { EventType } from '../database/event_type';
 
 export class AnalyzeBot {
 
