@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 require('./schema/company');
 import Country from './schema/country';
 import Company from './schema/company';
-import Price from './schema/Price';
+import Price from './schema/price';
 import Event from './schema/event';
 import Activity from './schema/activity';
 
