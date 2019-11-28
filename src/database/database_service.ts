@@ -34,6 +34,7 @@ export class DatabaseService {
 	}
 
 	public close(): void {
+		console.log('Close Database connection');
 		mongoose.connection.close();
 	}
 

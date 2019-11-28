@@ -39,7 +39,7 @@ export class UserService {
 	}
 
 	public analyzePrefix(): String {
-		return `Analyze for date ${this.util.today()}:`;
+		return `Analyze for date ${this.util.yesterday()}:`;
 	}
 	public legend(): string { 
 		return "Legend:\n\r" +

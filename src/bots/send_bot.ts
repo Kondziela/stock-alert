@@ -21,7 +21,7 @@ export class SendingBot {
         return new Promise<void>((resolve, reject) => {
 
             console.log("Start sending bot");
-            this.database.findEventsByDate(new Date(this.util.today())).then((events) => {
+            this.database.findEventsByDate(new Date(this.util.yesterday())).then((events) => {
                 console.log(`Number of processing events: ${events.length}`);
                 Promise.all(events.map(event => this.database.findActivityByEvent(event))).then((activities: Array<Array<Object>>) => {
                     let activitiesArray = activities.length ? (activities.reduce((a, b) => a.concat(b))) : [],

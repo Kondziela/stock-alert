@@ -57,26 +57,29 @@ export class AnalyzeBot {
             if (!analyzeKeys.length) {
                 resolve();
             }
-            analyzeKeys.forEach(key => {
-                this.upsertEvent(company, theNewestValue['date']).then( event => {
-                        this.upsertActivity(event, theNewestValue, key).then( () => {
-                            console.log(`Created event and activity for company ${company['name']}: ${ActivityType[key]}`);
-                            resolve();
-                        }).catch( err => reject(err));
-                }).catch( err => reject(err));
-            });
+
+            Promise.all(analyzeKeys.map(key => this.upsertEvent(company, theNewestValue, key)))
+            .then(() => resolve()).catch( err => reject(err));
         });
     }
 
-    private upsertEvent(company: Object, date: Date): Promise<Object> {
-        return Event.findOneAndUpdate({
-            company: company,
-            date: date,
-            type: EventType.ACTIVITY
-        }, {}, {
-            upsert: true,
-            new: true
-        }).exec();
+    private upsertEvent(company: Object, theNewestValue: Object, key: string): Promise<void> {
+        return new Promise<void>((resolve) => {
+            Event.findOneAndUpdate({
+                company: company,
+                date: theNewestValue['date'],
+                type: EventType.ACTIVITY
+            }, {}, {
+                upsert: true,
+                new: true
+            }).exec().then(event => {
+                this.upsertActivity(event, theNewestValue, key)
+                .then(() => {
+                    console.log(`Created event and activity for company ${company['name']}: ${ActivityType[key]}`);
+                    resolve()
+                });
+            });
+        });
     }
 
     private upsertActivity(event: Object, price: Object, key: string): Promise<Object> {

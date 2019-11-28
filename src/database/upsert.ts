@@ -52,14 +52,15 @@ export class Upsert {
                     let prices = apiFunctions['parserFn'].call(this, data);
 
                     console.log(`For company ${company['name']} downloaded ${prices.length} prices`);
-                    return Promise.all(prices.map((price, index) => {
+                    Promise.all(prices.map((price, index) => {
                         price['company'] = company;
-                        console.log(`Processing ${index + 1}/${prices.length}`);
+                        console.log(`Processing ${index + 1}/${prices.length}. ${price['date']}`);
                         return Price.findOneAndUpdate(price, {}, {
                             upsert: true,
                             new: true
                         }).exec();
-                    }));
+                    })).then(() => resolve())
+                    .catch((err) => console.error(err));
                 });
         });
     }

@@ -2,76 +2,91 @@
 	{
 		"code": "AMD",
 		"country": "USA",
-		"name": "AMD"
+		"name": "AMD",
+		"active": true
 	},
 	{
 		"country": "USA",
 		"code": "MSFT",
-		"name": "Microsoft"
+		"name": "Microsoft",
+		"active": true
 	},
 	{
 		"country": "USA",
 		"code": "TSLA",
-		"name": "Tesla"
+		"name": "Tesla",
+		"active": true
 	},
 	{
 		"country": "USA",
 		"code": "AMZN",
-		"name": "Amazon"
+		"name": "Amazon",
+		"active": true
 	},
 	{
 		"country": "USA",
 		"code": "TTWO",
-		"name": "Take-Two"
+		"name": "Take-Two",
+		"active": true
 	},
 	{
 		"country": "USA",
 		"code": "ATVI",
-		"name": "Blizzard"
+		"name": "Blizzard",
+		"active": true
 	},
 	{
 		"country": "USA",
 		"code": "NVDA",
-		"name": "Nvidia"
+		"name": "Nvidia",
+		"active": true
 	},
 	{
 		"country": "USA",
 		"code": "INTC",
-		"name": "Intel"
+		"name": "Intel",
+		"active": true
 	},
 	{
 		"country": "USA",
 		"code": "GOOGL",
-		"name": "Google"
+		"name": "Google",
+		"active": true
 	},
 	{
 		"country": "USA",
 		"code": "AAPL",
-		"name": "Apple"
+		"name": "Apple",
+		"active": true
 	},
 	{
 		"country": "USA",
 		"code": "FB",
-		"name": "Facebook"
+		"name": "Facebook",
+		"active": true
 	},
 	{
 		"country": "USA",
 		"code": "CSCO",
-		"name": "Cisco"
+		"name": "Cisco",
+		"active": true
 	},
 	{
 		"country": "USA",
 		"code": "TEAM",
-		"name": "Atlassian"
+		"name": "Atlassian",
+		"active": true
 	},
 	{
 		"country": "USA",
 		"code": "DELL",
-		"name": "Dell"
+		"name": "Dell",
+		"active": true
 	},
 	{
 		"country": "USA",
 		"code": "NKE",
-		"name": "Nike"
+		"name": "Nike",
+		"active": true
 	}
 ]

@@ -2,31 +2,37 @@
 	{
 		"country": "Germany",
 		"code": "BMW_X",
-		"name": "BMW"
+		"name": "BMW",
+		"active": true
 	},
 	{
 		"country": "Germany",
 		"code": "LHA_X",
-		"name": "Lufthansa"
+		"name": "Lufthansa",
+		"active": true
 	},
 	{
 		"country": "Germany",
 		"code": "DAI_X",
-		"name": "Daimler"
+		"name": "Daimler",
+		"active": true
 	},
 	{
 		"country": "Germany",
 		"code": "VOW3_X",
-		"name": "Volkswagen"
+		"name": "Volkswagen",
+		"active": true
 	},
 	{
 		"country": "Germany",
 		"code": "ADS_X",
-		"name": "Adidas"
+		"name": "Adidas",
+		"active": true
 	},
 	{
 		"country": "Germany",
 		"code": "PUM_X",
-		"name": "Puma"
+		"name": "Puma",
+		"active": true
 	}
 ]
