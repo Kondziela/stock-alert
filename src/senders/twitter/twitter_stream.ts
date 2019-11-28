@@ -23,7 +23,7 @@ export class TwitterStream extends TwitterSuit {
             access_token_secret: process.env.access_token_secret
         });
         this.companyMap = companyMap;
-        this.queue = new Array<Object>;
+        this.queue = new Array<Object>();
     }
 
     public createStream(trackList: Array<String>): void {
