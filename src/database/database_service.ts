@@ -5,6 +5,10 @@ import Company from './schema/company';
 import Price from './schema/price';
 import Event from './schema/event';
 import Activity from './schema/activity';
+import Hashtag from './schema/hashtag';
+import Tweet from './schema/tweet';
+import TweetBuff from './schema/tweet_buff';
+import { TwitterType } from './twitter_type';
 
 export class DatabaseService {
 
@@ -15,6 +19,7 @@ export class DatabaseService {
 
 	public init(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
+			console.log('Initializing database...');
 			mongoose.connect(this.getDBUri(), { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: true })
 				.then( () => {
 					console.log("Database connected successfully");
@@ -29,6 +34,7 @@ export class DatabaseService {
 	}
 
 	public close(): void {
+		console.log('Close Database connection');
 		mongoose.connection.close();
 	}
 
@@ -54,5 +60,29 @@ export class DatabaseService {
 			path: 'event',
 			populate: {path: 'company'}
 		}).exec();
+	}
+
+	public findHashtagsWithCompany(): Promise<Array<Object>> {
+		return Hashtag.find({type: TwitterType.HASHTAG}).populate('company').exec();
+	}
+
+	public processTweetAndInformIfNotExist(tweetBuff): Promise<void> {
+	    return new Promise<void>( (resolve, reject) => {
+            TweetBuff.findOne(tweetBuff).exec()
+                .then((data) => {
+                    if (data) {
+                        console.log('Found in buff');
+                        reject('Tweet exists in buff');
+                    } else {
+                        console.log('Didn\'t find in buff');
+                        TweetBuff.create(tweetBuff);
+                        return resolve();
+                    }
+                });
+        });
+	}
+	
+	public findTweetAggregateForCompanyAndDate(company: Object, date: Date): Promise<Object> {
+		return Tweet.findOne({company: company, date: date}).exec();
 	}
 }

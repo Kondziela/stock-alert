@@ -1,14 +1,18 @@
 import * as Twit from 'twit';
-import {Util} from "../utils/util";
+import {Util} from "../../utils/util";
+import * as Sentiment from 'sentiment';
+import {TwitterSuit} from "./twitter_suit";
 
-export class TwitterSender {
+export class TwitterSender extends TwitterSuit {
 
     private client: Twit;
     private util: Util;
+    private sentiment: Sentiment;
 
     constructor() {
+        super();
         this.util = new Util();
-        console.log(`Consumer key ${process.env.consumer_key}`);
+        this.sentiment = new Sentiment();
         this.client = new Twit({
             consumer_key: process.env.consumer_key,
             consumer_secret: process.env.consumer_secret,
@@ -61,11 +65,7 @@ export class TwitterSender {
     }
 
     private convertTweets(tweets: Object): Array<Object> {
-        return tweets['statuses'].map( tweet => {return {
-            date: new Date(tweet['created_at']),
-            text: tweet['text'],
-            id: tweet['id_str']
-        }});
+        return tweets['statuses'].map( tweet => this.convertTweet(tweet));
     }
 
     private decreaseByOne(id: String): String {

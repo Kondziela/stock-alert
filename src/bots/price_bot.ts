@@ -20,7 +20,7 @@ export class PriceBot {
              this.database.findActiveCompanies().then((companies) => {
                  Promise.all(companies.map(company => {
                      console.log(`Download price for ${company['name']}`);
-                     return this.upsert.upsertPrices(company, this.util.today());
+                     return this.upsert.upsertPrices(company, this.util.yesterday());
                  })).then(() => {
                      console.log('End processing Price Bot');
                      resolve()

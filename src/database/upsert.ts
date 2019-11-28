@@ -1,7 +1,9 @@
 import Country from './schema/country';
 import Company from './schema/company';
 import Price from "./schema/price";
+import Hashtag from './schema/hashtag';
 import {ApiForMarket} from "../utils/api_for_market";
+import { TwitterType } from './twitter_type';
 
 export class Upsert {
 
@@ -50,15 +52,40 @@ export class Upsert {
                     let prices = apiFunctions['parserFn'].call(this, data);
 
                     console.log(`For company ${company['name']} downloaded ${prices.length} prices`);
-                    return Promise.all(prices.map((price, index) => {
+                    Promise.all(prices.map((price, index) => {
                         price['company'] = company;
-                        console.log(`Processing ${index + 1}/${prices.length}`);
+                        console.log(`Processing ${index + 1}/${prices.length}. ${price['date']}`);
                         return Price.findOneAndUpdate(price, {}, {
                             upsert: true,
                             new: true
                         }).exec();
-                    }));
+                    })).then(() => resolve())
+                    .catch((err) => console.error(err));
                 });
+        });
+    }
+
+    // TODO[AKO]: should be integrated with rest of init load logic
+    public upsertHashtags(hashtags: Array<Object>) {
+        Company.find({}).exec().then(companies => {
+            companies.forEach( company => {
+                let hashtag = hashtags.find(h => h['company'].toLowerCase() === company['name'].toLowerCase());
+                if (!hashtag) {
+                    console.error(`No data for company ${company['name']}`);
+                    return;
+                }
+                console.log(`Hashtags for company ${company['name']}: ${hashtag}`);
+                hashtag['hashtags'].forEach(h => {
+                    Hashtag.findOneAndUpdate({
+                        company: company,
+                        hashtag: h,
+                        type: TwitterType.HASHTAG
+                    }, {}, {
+                        upsert: true, 
+                        new: true
+                    }).exec();
+                });
+            });
         });
     }
 

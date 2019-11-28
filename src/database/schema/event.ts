@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import {EventType} from "../../bots/EventType";
+import {EventType} from "../event_type";
 
 var EventSchema = new mongoose.Schema({
 	company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },

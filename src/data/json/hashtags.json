@@ -1,0 +1,107 @@
+[
+    {
+        "company": "AMD",
+        "hashtags": ["amd", "ryzer"],
+        "mentions": []
+    },
+    {
+        "company": "Nvidia",
+        "hashtags": ["nvidia", "geforce"],
+        "mentions": []
+    },
+    {
+        "company": "Microsoft",
+        "hashtags": ["microsoft", "azure", "xbox", "windows"],
+        "mentions": []
+    },
+    {
+        "company": "Tesla",
+        "hashtags": ["tesla"],
+        "mentions": []
+    },
+    {
+        "company": "Amazon",
+        "hashtags": ["amazon", "aws", "kindle"],
+        "mentions": []
+    },
+    {
+        "company": "Take-Two",
+        "hashtags": ["rockstartgames", "gtaV", "GTAOnline"],
+        "mentions": []
+    },
+    {
+        "company": "Blizzard",
+        "hashtags": ["BlizzardCS"],
+        "mentions": []
+    },
+    {
+        "company": "Intel",
+        "hashtags": ["intel"],
+        "mentions": ["intel"]
+    },
+    {
+        "company": "Google",
+        "hashtags": ["google"],
+        "mentions": []
+    },
+    {
+        "company": "Apple",
+        "hashtags": ["apple", "iphone"],
+        "mentions": []
+    },
+    {
+        "company": "Facebook",
+        "hashtags": ["facebook", "instagram", "snapchat"],
+        "mentions": []
+    },
+    {
+        "company": "Cisco",
+        "hashtags": ["cisco"],
+        "mentions": []
+    },
+    {
+        "company": "Atlassian",
+        "hashtags": ["atlassian"],
+        "mentions": []
+    },
+    {
+        "company": "Dell",
+        "hashtags": ["dell"],
+        "mentions": []
+    },
+    {
+        "company": "Nike",
+        "hashtags": ["nike"],
+        "mentions": []
+    },
+    {
+        "company": "BMW",
+        "hashtags": ["bmw", "bmwi", "mini"],
+        "mentions": []
+    },
+    {
+        "company": "Lufthansa",
+        "hashtags": ["lufthansa"],
+        "mentions": []
+    },
+    {
+        "company": "Daimler",
+        "hashtags": ["daimler", "mercedes"],
+        "mentions": []
+    },
+    {
+        "company": "Volkswagen",
+        "hashtags": ["volkswagen", "seat", "audi", "skoda"],
+        "mentions": []
+    },
+    {
+        "company": "Adidas",
+        "hashtags": ["adidas"],
+        "mentions": []
+    },
+    {
+        "company": "Puma",
+        "hashtags": ["puma"],
+        "mentions": []
+    }
+]

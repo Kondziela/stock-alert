@@ -11,6 +11,12 @@
 	 	return new Date().toISOString().substring(0, 10);
 	}
 
+	public yesterday(): string {
+		let date = new Date();
+		date.setDate(date.getDate() - 1);
+		return date.toISOString().substring(0, 10);
+	}
+
 	public findTodayObject(allValues: any, date: string): object {
 		return allValues.reduce( (o1, o2) => o1.date == date ? o1 : o2 );
 	}
