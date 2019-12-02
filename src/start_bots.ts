@@ -1,10 +1,9 @@
 import { MainBot } from './main_bot';
 
-let main = new MainBot();
+exports.startBots = async() => {
+    console.log('Start Scheduler');
 
-console.log('Start Scheduler');
-
-MainBot.initEnvironmentVariables()
-    .then(() => main.startProcessing())
-    .catch(err => console.error(err));
-
+    MainBot.initEnvironmentVariables()
+        .then(() => new MainBot().startProcessing())
+        .catch(err => console.error(err));
+}
