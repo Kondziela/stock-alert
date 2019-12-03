@@ -66,3 +66,4 @@ tokens.js
 tokens.json
 dist/
 .idea/
+logs/
