@@ -85,4 +85,8 @@ export class DatabaseService {
 	public findTweetAggregateForCompanyAndDate(company: Object, date: Date): Promise<Object> {
 		return Tweet.findOne({company: company, date: date}).exec();
 	}
+
+	public deleteTweetsBuffOlderThat(lastDate: Date): Promise<void> {
+		return TweetBuff.deleteMany({date: {$lt: lastDate}}).exec();
+	}
 }

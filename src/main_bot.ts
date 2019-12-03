@@ -5,6 +5,7 @@ import {AnalyzeBot} from "./bots/analyze_bot";
 import * as fs from "fs";
 import * as path from 'path';
 import {TwitterStreamBot} from "./bots/twitter_stream_bot";
+import {DBCleanerBot} from "./bots/db_cleaner_bot";
 
 export class MainBot {
 
@@ -12,6 +13,7 @@ export class MainBot {
 	private analyzeBot: AnalyzeBot;
 	private sendingBot: SendingBot;
 	private twitterStreamBot: TwitterStreamBot;
+	private dbCleanerBot: DBCleanerBot;
 	private databaseService: DatabaseService;
 
 	constructor() {
@@ -19,6 +21,7 @@ export class MainBot {
 		this.analyzeBot = new AnalyzeBot();
 		this.twitterStreamBot = new TwitterStreamBot();
 		this.sendingBot = new SendingBot();
+		this.dbCleanerBot = new DBCleanerBot();
 		this.databaseService = new DatabaseService();
 	}
 
@@ -37,6 +40,12 @@ export class MainBot {
 	public startTwitterStreamBot(): void {
 		this.databaseService.init()
 			.then(() => this.twitterStreamBot.run());
+	}
+
+	public startDBCleanerBot(): void {
+		this.databaseService.init()
+			.then(() => this.dbCleanerBot.run()
+			.then(() => this.databaseService.close()));
 	}
 
 	public static initEnvironmentVariables(): Promise<void> {
