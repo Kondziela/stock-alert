@@ -6,6 +6,7 @@ import * as fs from "fs";
 import * as path from 'path';
 import {TwitterStreamBot} from "./bots/twitter_stream_bot";
 import {DBCleanerBot} from "./bots/db_cleaner_bot";
+import {Logger} from "./utils/logger";
 
 export class MainBot {
 
@@ -15,6 +16,7 @@ export class MainBot {
 	private twitterStreamBot: TwitterStreamBot;
 	private dbCleanerBot: DBCleanerBot;
 	private databaseService: DatabaseService;
+	private logger: Logger;
 
 	constructor() {
 		this.priceBot = new PriceBot();
@@ -23,6 +25,7 @@ export class MainBot {
 		this.sendingBot = new SendingBot();
 		this.dbCleanerBot = new DBCleanerBot();
 		this.databaseService = new DatabaseService();
+		this.logger = new Logger();
 	}
 
 	public startProcessing(): void {
@@ -31,21 +34,24 @@ export class MainBot {
 			.then(() => this.analyzeBot.run()
 			.then(() => this.sendingBot.run()
 			.then(() => this.databaseService.close())
-				.catch(err => console.error(err)))
-				.catch(err => console.error(err)))
-				.catch(err => console.error(err)))
-				.catch(err => console.error(err));
+				.catch(err => this.logger.log(err)))
+				.catch(err => this.logger.log(err)))
+				.catch(err => this.logger.log(err)))
+				.catch(err => this.logger.log(err));
 	}
 
 	public startTwitterStreamBot(): void {
 		this.databaseService.init()
-			.then(() => this.twitterStreamBot.run());
+			.then(() => this.twitterStreamBot.run())
+			.catch(err => this.logger.log(err));
 	}
 
 	public startDBCleanerBot(): void {
 		this.databaseService.init()
 			.then(() => this.dbCleanerBot.run()
-			.then(() => this.databaseService.close()));
+			.then(() => this.databaseService.close())
+				.catch(err => this.logger.log(err)))
+				.catch(err => this.logger.log(err));
 	}
 
 	public static initEnvironmentVariables(): Promise<void> {

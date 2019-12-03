@@ -3,6 +3,7 @@ import * as Sentiment from 'sentiment';
 import {TwitterSuit} from "./twitter_suit";
 import {DatabaseService} from "../../database/database_service";
 import Tweet from '../../database/schema/tweet';
+import {Logger} from "../../utils/logger";
 
 export class TwitterStream extends TwitterSuit {
 
@@ -11,6 +12,7 @@ export class TwitterStream extends TwitterSuit {
     private companyMap: Object;
     private database: DatabaseService;
     private queue: Array<Object>;
+    private logger: Logger;
 
     constructor(companyMap: Object) {
         super();
@@ -24,6 +26,7 @@ export class TwitterStream extends TwitterSuit {
         });
         this.companyMap = companyMap;
         this.queue = new Array<Object>();
+        this.logger = new Logger();
     }
 
     public createStream(trackList: Array<String>): void {
@@ -48,7 +51,9 @@ export class TwitterStream extends TwitterSuit {
         let tweet = this.queue.shift();
         console.log(`Size of Queue: ${this.queue.length}`);
         if (tweet) {
-            this.handleTweet(tweet).then(() => this.handleQueue());
+            this.handleTweet(tweet)
+                .then(() => this.handleQueue())
+                .catch(err => this.logger.log(err));
         } else {
             new Promise(resolve => setTimeout(resolve, 1000)).then(() => this.handleQueue());
         }
