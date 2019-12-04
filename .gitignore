@@ -67,3 +67,4 @@ tokens.json
 dist/
 .idea/
 logs/
+package/

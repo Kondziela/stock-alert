@@ -76,6 +76,8 @@ export class MainBot {
 						process.env.consumer_secret = tokens['consumer_secret'];
 						process.env.access_token = tokens['access_token'];
 						process.env.access_token_secret = tokens['access_token_secret'];
+						// turn off logging
+						process.env.aws_environment = "";
 						resolve();
 					});
 				} else {

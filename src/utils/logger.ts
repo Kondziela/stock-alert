@@ -8,21 +8,25 @@ export class Logger {
     private util: Util;
 
     constructor() {
-        console.log(`Log DIR: ${this.LOG_DIR}`);
-        if (!fs.existsSync(this.LOG_DIR)){
-            console.log('Created log dir');
-            fs.mkdirSync(this.LOG_DIR);
+        if (!process.env.aws_environment) {
+            console.log(`Log DIR: ${this.LOG_DIR}`);
+            if (!fs.existsSync(this.LOG_DIR)) {
+                console.log('Created log dir');
+                fs.mkdirSync(this.LOG_DIR);
+            }
         }
 
         this.util = new Util();
     }
 
     public log(text: Object): void {
-        fs.appendFile(path.join(this.LOG_DIR, `${this.util.today()}.log`), this.formatMessage(text), (err) => {
-            if (err) {
-                console.error('Error when logging', err);
-            }
-        })
+        if (!process.env.aws_environment) {
+            fs.appendFile(path.join(this.LOG_DIR, `${this.util.today()}.log`), this.formatMessage(text), (err) => {
+                if (err) {
+                    console.error('Error when logging', err);
+                }
+            })
+        }
     }
 
     private formatMessage(text: Object): String {
