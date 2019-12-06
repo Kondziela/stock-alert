@@ -1,13 +1,27 @@
-import * as dynamoose from 'dynamoose';
+import {MainBot} from "../main_bot";
+import {Sequelize} from "sequelize";
+var AWS = require('aws-sdk');
 
-dynamoose.AWS.config.update({
-    accessKeyId: '',
-    secretAccessKey: '',
-    region: ''
-  });
+const DISABLE_SEQUELIZE_DEFAULTS = {
+    timestamps: false,
+    freezeTableName: true,
+};
 
-  const Country = dynamoose.model('Country', {id: Number, name: String});
 
-  let country = new Country({id: 1, name: "USA"});
+MainBot.initEnvironmentVariables().then(() => {
+    AWS.config.update({
+        accessKeyId: process.env.access_key_aws,
+        secretAccessKey: process.env.secret_key_aws,
+        region: process.env.region_aws
+    });
 
-  country.save();
+    const sequelize = new Sequelize("dbname", "username", "password", {
+        host: 'pgssltest.xxxxxxxxxxxx.region.rds.amazonaws.com',
+        dialect: 'mysql',
+        // TODO[AKO]: use cert for connection https://medium.com/soluto-nashville/best-security-practices-for-amazon-rds-with-sequelize-600a8b497804
+        dialectOptions: {
+            ssl: 'Amazon RDS'
+        }
+    });
+
+});

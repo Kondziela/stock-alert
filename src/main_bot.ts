@@ -78,6 +78,10 @@ export class MainBot {
 						process.env.access_token_secret = tokens['access_token_secret'];
 						// turn off logging
 						process.env.aws_environment = "";
+						// aws user
+						process.env.access_key_aws = tokens['AWS_ACCESS_KEY_ID'];
+						process.env.secret_key_aws= tokens['AWS_SECRET_ACCESS_KEY'];
+						process.env.region_aws= tokens['AWS_REGION'];
 						resolve();
 					});
 				} else {

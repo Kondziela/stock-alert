@@ -16,12 +16,13 @@ export class Upsert {
     public upsertCountry(countries: Array<JSON>): Promise<Object[]> {
         return Promise.all(countries.map(country => {
                 console.log(`Starting processing for ${country['country']}`);
-                return Country.findOneAndUpdate({
-                    country: country['country']
-                }, {}, {
-                    upsert: true,
-                    new: true
-                }).exec()
+                return new Promise(resolve => resolve());
+                // return Country.findOneAndUpdate({
+                //     country: country['country']
+                // }, {}, {
+                //     upsert: true,
+                //     new: true
+                // }).exec()
             })
         );
     }

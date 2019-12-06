@@ -1,8 +1,15 @@
-import * as mongoose from 'mongoose';
+import {Table, Column, Model, HasMany} from 'sequelize-typescript';
 
-var CountrySchema = new mongoose.Schema({
-    country: String,
-    active: Boolean
-},{ collection: 'countries' });
+@Table
+export default class Country extends Model<Country> {
 
-export default mongoose.model('Country', CountrySchema);
+    @Column
+    country: string;
+
+    @Column
+    active: boolean;
+    //
+    // @HasMany(() => Company)
+    // companies: Company[];
+
+}

@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 require('./schema/company');
-import Country from './schema/country';
+// import Country from './schema/country';
 import Company from './schema/company';
 import Price from './schema/price';
 import Event from './schema/event';
@@ -39,12 +39,13 @@ export class DatabaseService {
 	}
 
 	public findActiveCompanies(): Promise<Array<Object>> {
-		return Country.find({}).then( countries => {
-			let activeCountries = countries.filter(o => o.active);
-			return Company.find({country: {$in: activeCountries}}).populate('country').exec();
-		}).catch( err => {
-			console.error(err);
-		});
+		return new Promise<Array<Object>>(resolve => resolve());
+		// return Country.find({}).then( countries => {
+		// 	let activeCountries = countries.filter(o => o.active);
+		// 	return Company.find({country: {$in: activeCountries}}).populate('country').exec();
+		// }).catch( err => {
+		// 	console.error(err);
+		// });
 	}
 
 	public findPricesForCompanyAfterDate(company: Object, date: Date): Promise<Array<Object>> {
