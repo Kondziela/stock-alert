@@ -1,7 +1,7 @@
 import Country from './models/country';
-import Company from './schema/company';
-import Price from "./schema/price";
-import Hashtag from './schema/hashtag';
+import Company from './models/company';
+import Price from "./models/price";
+import Hashtag from './models/hashtag';
 import {ApiForMarket} from "../utils/api_for_market";
 import { TwitterType } from './twitter_type';
 
@@ -13,38 +13,36 @@ export class Upsert {
         this.apiForMarket = new ApiForMarket();
     }
 
-    public upsertCountry(countries: Array<JSON>): Promise<Object[]> {
+    public upsertCountry(countries: Array<JSON>): Promise<Country[]> {
         return Promise.all(countries.map(country => {
                 console.log(`Starting processing for ${country['country']}`);
-                return new Promise(resolve => resolve());
-                // return Country.findOneAndUpdate({
-                //     country: country['country']
-                // }, {}, {
-                //     upsert: true,
-                //     new: true
-                // }).exec()
+                return Country.findOrCreate({
+                    where: {
+                        country: country['country']
+                    },
+                    defaults: {
+                        active: country['active']
+                    }
+                });
             })
         );
     }
 
-    public upsertCompanies(country: Object, companies: Array<JSON>): Promise<Object[]> {
+    public upsertCompanies(country: Country, companies: Array<JSON>): Promise<Company[]> {
         return Promise.all(companies.map(company => {
             console.log(`Starting processing for ${company['name']}`);
-                return Company.findOneAndUpdate({
-                    code: company['code'],
-                    name: company['name'],
-                    country: country
-                }, {}, {
-                    upsert: true,
-                    new: true
-                })
-                .populate('country')
-                .exec()
+                return Company.findOrCreate({
+                    where: {
+                        code: company['code'],
+                        name: company['name'],
+                        country_id: country.id
+                    }
+                });
             })
         );
     }
 
-    public upsertPrices(company: Object, startDate: string): Promise<void> {
+    public upsertPrices(company: Company, startDate: string): Promise<void> {
         let apiFunctions = this.apiForMarket.getAPIFunctionForMarket(company['country']['country']);
 
         return new Promise<void>( (resolve, reject) => {
@@ -54,12 +52,11 @@ export class Upsert {
 
                     console.log(`For company ${company['name']} downloaded ${prices.length} prices`);
                     Promise.all(prices.map((price, index) => {
-                        price['company'] = company;
+                        price['company_id'] = company.id;
                         console.log(`Processing ${index + 1}/${prices.length}. ${price['date']}`);
-                        return Price.findOneAndUpdate(price, {}, {
-                            upsert: true,
-                            new: true
-                        }).exec();
+                        return Price.findOrCreate({
+                            where: price
+                        });
                     })).then(() => resolve())
                     .catch((err) => console.error(err));
                 });
@@ -68,7 +65,7 @@ export class Upsert {
 
     // TODO[AKO]: should be integrated with rest of init load logic
     public upsertHashtags(hashtags: Array<Object>) {
-        Company.find({}).exec().then(companies => {
+        Company.findAll({}).then(companies => {
             companies.forEach( company => {
                 let hashtag = hashtags.find(h => h['company'].toLowerCase() === company['name'].toLowerCase());
                 if (!hashtag) {
@@ -77,14 +74,13 @@ export class Upsert {
                 }
                 console.log(`Hashtags for company ${company['name']}: ${hashtag}`);
                 hashtag['hashtags'].forEach(h => {
-                    Hashtag.findOneAndUpdate({
-                        company: company,
-                        hashtag: h,
-                        type: TwitterType.HASHTAG
-                    }, {}, {
-                        upsert: true, 
-                        new: true
-                    }).exec();
+                    Hashtag.findOrCreate({
+                        where: {
+                            company_id: company.id,
+                            hashtag: h,
+                            type: TwitterType.HASHTAG
+                        }
+                    });
                 });
             });
         });

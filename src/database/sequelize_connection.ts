@@ -10,7 +10,12 @@ export class SequelizeConnection {
         return new Promise<Sequelize>((resolve, reject) => {
             if (!this.sequelize) {
                 this.sequelize = new Sequelize({
-
+                    database: 'cheeki-breeki',
+                    dialect: 'mysql',
+                    username: 'admin',
+                    password: 'KZEPSXqsK1xa883gkgZK',
+                    host: 'cheeki-breeki.cluster-c7vhdfnlyd0w.eu-central-1.rds.amazonaws.com',
+                    port: 3306,
                     models: [__dirname + '/models'],
                     dialectOptions: {
                         multipleStatements: true
