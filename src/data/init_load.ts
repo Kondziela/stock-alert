@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {Upsert} from "../database/upsert";
 import {MainBot} from "../main_bot";
+import Company from '../database/models/company';
 
 /**
  * Script for initial load. Loads:
@@ -26,12 +27,11 @@ export class InitLoad {
 
     public run() {
         MainBot.initEnvironmentVariables()
-            .then( () => this.database.init()
-            .then( () => this.loadCountries()
-            .then( (countries) => this.loadCompanies(countries)
-            .then( (companies) => this.loadHistoricalDate(companies)
-            .then( () => this.database.close())))))
-            .catch( (err) => console.error(err));
+            .then(() => this.database.init()
+            .then(() => this.loadCountries()
+            .then((countries) => this.loadCompanies(countries)
+            .then((companies) => this.loadHistoricalDate(companies)))))
+            .catch((err) => console.error(err));
     }
 
     private loadCountries(): Promise<Object[]> {
@@ -40,19 +40,19 @@ export class InitLoad {
         return this.upsert.upsertCountry(countries);
     }
 
-    private loadCompanies(countries: Object[]): Promise<Object[][]> {
+    private loadCompanies(countries: Object[]): Promise<Company[][]> {
         let countriesList = countries.filter( o => o['active']);
         console.log('Load companies');
         return Promise.all(countriesList.map( country => this.loadCompaniesForCountry(country)));
     }
 
-    private loadCompaniesForCountry(country): Promise<Object[]> {
+    private loadCompaniesForCountry(country): Promise<Company[]> {
         let companies = JSON.parse(fs.readFileSync(path.join(__dirname,'json', `companies${country.country}.json`)).toString());
         console.log('Upset companies');
         return this.upsert.upsertCompanies(country, companies);
     }
 
-    private loadHistoricalDate(companies: Array<Array<Object>>): Promise<void[]> {
+    private loadHistoricalDate(companies: Array<Array<Company>>): Promise<void[]> {
         let companiesList = companies.length ? companies.reduce( (a, b) => a.concat(b)) : [];
         console.log('Analyze companies: ');
         return Promise.all(companiesList.map(company => {
