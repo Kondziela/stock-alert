@@ -18,11 +18,18 @@ export class DatabaseService {
 		this.sequelizeConnection = new SequelizeConnection();
 	}
 
-	public findActiveCompanies(): Promise<Array<Country>> {
-		return Country.findAll({
-			where: {
-				active: true
-			}
+	public init(): Promise<Sequelize> {
+		return this.sequelizeConnection.getConnection();
+	} 
+
+	public findActiveCompanies(): Promise<Array<Company>> {
+		return Company.findAll({
+			include: [{
+				model: Country,
+				where: {
+					active: true
+				}
+			}]
 		});
 	}
 
@@ -40,7 +47,7 @@ export class DatabaseService {
 		});
 	}
 
-	public findEventsByDate(date: Date): Promise<Array<Object>> {
+	public findEventsByDate(date: Date): Promise<Array<Event>> {
 		return Event.findAll({
 			where: {
 				date: date.toString()
@@ -64,12 +71,12 @@ export class DatabaseService {
 		});
 	}
 
-	public processTweetAndInformIfNotExist(tweetBuff: TweetBuff): Promise<void> {
+	public processTweetAndInformIfNotExist(tweetBuff: Object): Promise<void> {
 	    return new Promise<void>( (resolve, reject) => {
             TweetBuff.findOne({
 				where: {
-					tweet_id: tweetBuff.tweet_id,
-					date: tweetBuff.date.toString()
+					tweet_id: tweetBuff['id'],
+					date: tweetBuff['date']
 				}
 			}).then((data) => {
 				if (data) {
@@ -84,10 +91,10 @@ export class DatabaseService {
         });
 	}
 	
-	public findTweetAggregateForCompanyAndDate(company: Company, date: Date): Promise<Tweet> {
+	public findTweetAggregateForCompanyAndDate(company: Object, date: Date): Promise<Tweet> {
 		return Tweet.findOne({
 			where: {
-				company_id: company.id,
+				company_id: company['id'],
 				date: date.toString()
 			}
 		});

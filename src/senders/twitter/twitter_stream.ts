@@ -2,7 +2,7 @@ import * as Twit from 'twit';
 import * as Sentiment from 'sentiment';
 import {TwitterSuit} from "./twitter_suit";
 import {DatabaseService} from "../../database/database_service";
-import Tweet from '../../database/schema/tweet';
+import Tweet from '../../database/models/tweet';
 import {Logger} from "../../utils/logger";
 
 export class TwitterStream extends TwitterSuit {
@@ -74,14 +74,11 @@ export class TwitterStream extends TwitterSuit {
                         console.log(`Sentiment value: ${analyze['score']}`);
                         
                         companies.forEach(company => {
-                            this.database.findTweetAggregateForCompanyAndDate(company, tweetDate)
-                                .then(aggregate => {
-                                    this.processUpsertOfTweetAggregate(aggregate, company, tweetDate, analyze)
-                                    .then(() => {
-                                        console.log(`Created aggregate`);
-                                        resolve();
-                                    });
-                                });
+                            this.processUpsertOfTweetAggregate(company, tweetDate, analyze)
+                            .then(() => {
+                                console.log(`Created aggregate`);
+                                resolve();
+                            });
                         });
                     }).catch(err => console.log(err));
             } else {
@@ -91,14 +88,7 @@ export class TwitterStream extends TwitterSuit {
         })
     }
 
-    private getFilterValues(tweet: Object): Object {
-        return {
-            company: tweet['company'],
-            date: tweet['date']
-        }
-    }
-
-    private processSentiment(tweet: Object, sentiment: number): Object {
+    private processSentiment(tweet: Tweet, sentiment: number): Tweet {
         if (sentiment > 0) {
             tweet['positive']++;
         } else if (sentiment < 0) {
@@ -117,24 +107,24 @@ export class TwitterStream extends TwitterSuit {
             }).map(company => JSON.parse(company));
     }
 
-    private processUpsertOfTweetAggregate(aggregate, company, tweetDate, analyze): Promise<void> {
-        console.log(`Found aggregate ${aggregate}`);
-        if (!aggregate) {
-            aggregate = {
-                company: company,
-                date: tweetDate,
-                total: 0,
-                positive: 0,
-                negative: 0,
-                neutral: 0
-            };
-        }
-        return Tweet.findOneAndUpdate(
-            this.getFilterValues(aggregate),
-            this.processSentiment(aggregate, analyze['score']),
-        {
-            upsert: true,
-            new: true
-        }).exec();
+    private processUpsertOfTweetAggregate(company, tweetDate, analyze): Promise<void> {
+        return new Promise<void>(resolve => 
+            Tweet.findOrCreate({
+                where: {
+                    company_id: company['id'],
+                    date: tweetDate
+                },
+                defaults: {
+                    company_id: company['id'],
+                    date: tweetDate,
+                    total: 0,
+                    positive: 0,
+                    negative: 0,
+                    neutral: 0
+                }
+            }).then(tweet => {
+                this.processSentiment(tweet, analyze['score']).save().then(() => () => resolve());
+            })
+        );
     }
 }
