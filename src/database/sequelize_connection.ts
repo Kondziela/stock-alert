@@ -10,12 +10,12 @@ export class SequelizeConnection {
         return new Promise<Sequelize>((resolve, reject) => {
             if (!this.sequelize) {
                 this.sequelize = new Sequelize({
-                    database: 'cheeki-breeki',
+                    database: process.env.database_name,
                     dialect: 'mysql',
-                    username: 'admin',
-                    password: 'KZEPSXqsK1xa883gkgZK',
-                    host: 'cheeki-breeki.cluster-c7vhdfnlyd0w.eu-central-1.rds.amazonaws.com',
-                    port: 3306,
+                    username: process.env.db_username,
+                    password: process.env.db_password,
+                    host: process.env.db_host,
+                    port: parseInt(process.env.db_port),
                     models: [__dirname + '/models'],
                     dialectOptions: {
                         multipleStatements: true
@@ -33,6 +33,10 @@ export class SequelizeConnection {
             }
             return resolve(this.sequelize);
         });
+    }
+
+    public close(): Promise<void> {
+        return this.sequelize.close();
     }
 
     public createDatabase() {

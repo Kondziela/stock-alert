@@ -22,6 +22,10 @@ export class DatabaseService {
 		return this.sequelizeConnection.getConnection();
 	} 
 
+	public close(): Promise<void> {
+		return this.sequelizeConnection.close();
+	}
+
 	public findActiveCompanies(): Promise<Array<Company>> {
 		return Company.findAll({
 			include: [{

@@ -68,9 +68,6 @@ export class MainBot {
 						process.env.german_token = tokens['german_token'];
 						// Slack settings
 						process.env.slack_webhooks = tokens['slack_webhooks'];
-						// MongoDB setting
-						process.env.mongodb_user = tokens['mongodb_user'];
-						process.env.mongodb_password = tokens['mongodb_password'];
 						// Twitter settings
 						process.env.consumer_key = tokens['consumer_key'];
 						process.env.consumer_secret = tokens['consumer_secret'];
@@ -78,10 +75,12 @@ export class MainBot {
 						process.env.access_token_secret = tokens['access_token_secret'];
 						// turn off logging
 						process.env.aws_environment = "";
-						// aws user
-						process.env.access_key_aws = tokens['AWS_ACCESS_KEY_ID'];
-						process.env.secret_key_aws= tokens['AWS_SECRET_ACCESS_KEY'];
-						process.env.region_aws= tokens['AWS_REGION'];
+						// database access
+						process.env.database_name = tokens['database_name'];
+						process.env.db_username = tokens['database_name'];
+						process.env.db_password = tokens['database_name'];
+						process.env.db_host = tokens['database_name'];
+						process.env.db_port = tokens['database_name'];
 						resolve();
 					});
 				} else {
