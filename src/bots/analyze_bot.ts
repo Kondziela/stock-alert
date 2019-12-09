@@ -1,22 +1,21 @@
 import { Util } from '../utils/util';
-import { Sorter } from '../utils/sorters';
 import { AnalyzeService } from '../services/analyze_service';
 import { DatabaseService } from '../database/database_service';
-import Event from '../database/schema/event';
-import Activity from '../database/schema/activity';
+import Event from '../database/models/event';
+import Activity from '../database/models/activity';
 import {ActivityType} from "../database/activity_type";
 import { EventType } from '../database/event_type';
+import Company from '../database/models/company';
+import Price from '../database/models/price';
 
 export class AnalyzeBot {
 
     private util: Util;
-    private sorter: Sorter;
     private analyzeService: AnalyzeService;
     private databaseService: DatabaseService;
 
     constructor() {
         this.util = new Util();
-        this.sorter = new Sorter();
         this.analyzeService = new AnalyzeService();
         this.databaseService = new DatabaseService();
     }
@@ -35,7 +34,7 @@ export class AnalyzeBot {
     }
 
 
-    private processPricesForCompany(company: Object): Promise<void> {
+    private processPricesForCompany(company: Company): Promise<void> {
         return new Promise<void>( (resolve, reject) => {
             this.databaseService.findPricesForCompanyAfterDate(company, new Date(this.util.oneYearAgo()))
                 .then( prices => {
@@ -47,7 +46,7 @@ export class AnalyzeBot {
         });
     }
 
-    private countMetrics(company: any, allValues: Array<any>): Promise<void> {
+    private countMetrics(company: Company, allValues: Array<Price>): Promise<void> {
         let theNewestValue = allValues[0],
             analize = this.analyzeService.analizeCompany([...allValues], theNewestValue),
             analyzeKeys = Object.keys(analize).filter(key => analize[key]);
@@ -63,16 +62,15 @@ export class AnalyzeBot {
         });
     }
 
-    private upsertEvent(company: Object, theNewestValue: Object, key: string): Promise<void> {
+    private upsertEvent(company: Company, theNewestValue: Price, key: string): Promise<void> {
         return new Promise<void>((resolve) => {
-            Event.findOneAndUpdate({
-                company: company,
-                date: theNewestValue['date'],
-                type: EventType.ACTIVITY
-            }, {}, {
-                upsert: true,
-                new: true
-            }).exec().then(event => {
+            Event.findOrCreate({
+                where: {
+                    company_id: company.id,
+                    date: theNewestValue['date'].toDateString(),
+                    type: EventType.ACTIVITY
+                }
+            }).then(event => {
                 this.upsertActivity(event, theNewestValue, key)
                 .then(() => {
                     console.log(`Created event and activity for company ${company['name']}: ${ActivityType[key]}`);
@@ -82,14 +80,13 @@ export class AnalyzeBot {
         });
     }
 
-    private upsertActivity(event: Object, price: Object, key: string): Promise<Object> {
-        return Activity.findOneAndUpdate({
-            type: ActivityType[key],
-            event: event,
-            price: price
-        }, {}, {
-            upsert: true,
-            new: true
-        }).exec();
+    private upsertActivity(event: Event, price: Price, key: string): Promise<Activity> {
+        return Activity.findOrCreate({
+            where: {
+                type: ActivityType[key],
+                event_id: event.id,
+                price_id: price.id
+            }
+        });
     }
 }

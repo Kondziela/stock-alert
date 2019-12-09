@@ -1,5 +1,6 @@
 import {TwitterStream} from "../senders/twitter/twitter_stream";
 import {DatabaseService} from "../database/database_service";
+import Hashtag from "../database/models/hashtag";
 
 export class TwitterStreamBot {
 
@@ -19,7 +20,7 @@ export class TwitterStreamBot {
         });
     }
 
-    private groupHashtagsByCompanies(hashtagList: Array<Object>): Object {
+    private groupHashtagsByCompanies(hashtagList: Array<Hashtag>): Object {
         let map = {};
         for (let hashtag of hashtagList) {
             let company = JSON.stringify(hashtag['company']);

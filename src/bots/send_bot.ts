@@ -2,6 +2,7 @@ import {DatabaseService} from "../database/database_service";
 import {Util} from "../utils/util";
 import {UserService} from "../services/user_service";
 import {SlackSender} from "../senders/slack_sender";
+import Activity from "../database/models/activity";
 
 export class SendingBot {
 
@@ -23,7 +24,7 @@ export class SendingBot {
             console.log("Start sending bot");
             this.database.findEventsByDate(new Date(this.util.yesterday())).then((events) => {
                 console.log(`Number of processing events: ${events.length}`);
-                Promise.all(events.map(event => this.database.findActivityByEvent(event))).then((activities: Array<Array<Object>>) => {
+                Promise.all(events.map(event => this.database.findActivityByEvent(event))).then((activities: Array<Array<Activity>>) => {
                     let activitiesArray = activities.length ? (activities.reduce((a, b) => a.concat(b))) : [],
                         companyActivities = this.groupByCompany(activitiesArray),
                         slackResponse = this.userService.slackResponse(companyActivities);
@@ -36,7 +37,7 @@ export class SendingBot {
         });
     }
 
-    private groupByCompany(activities: Array<Object>): Object {
+    private groupByCompany(activities: Array<Activity>): Object {
         let companyActivities = {};
 
         activities.forEach(activity => {
