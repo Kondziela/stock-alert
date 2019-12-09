@@ -1,6 +1,8 @@
 import {Table, Column, Model, HasMany} from 'sequelize-typescript';
 
-@Table
+@Table({
+    timestamps: false
+})
 export default class Country extends Model<Country> {
 
     @Column

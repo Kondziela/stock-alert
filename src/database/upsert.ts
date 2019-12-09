@@ -1,4 +1,4 @@
-import Country from './schema/country';
+import Country from './models/country';
 import Company from './schema/company';
 import Price from "./schema/price";
 import Hashtag from './schema/hashtag';
