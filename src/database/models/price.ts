@@ -1,4 +1,4 @@
-import {Table, Column, Model, ForeignKey, NotNull, BelongsTo} from 'sequelize-typescript';
+import {Table, Column, Model, ForeignKey, BelongsTo, AllowNull} from 'sequelize-typescript';
 import Company from "./company";
 
 @Table({
@@ -6,31 +6,31 @@ import Company from "./company";
 })
 export default class Price extends Model<Price> {
 
-    @NotNull
+    @AllowNull(false)
     @Column
     open: number;
 
-    @NotNull
+    @AllowNull(false)
     @Column
     close: number;
 
-    @NotNull
+    @AllowNull(false)
     @Column
     max: number;
 
-    @NotNull
+    @AllowNull(false)
     @Column
     min: number;
 
-    @NotNull
+    @AllowNull(false)
     @Column
     volume: number;
 
-    @NotNull
+    @AllowNull(false)
     @Column
     date: Date;
 
-    @NotNull
+    @AllowNull(false)
     @ForeignKey(() => Company)
     @Column
     company_id: number;

@@ -1,4 +1,4 @@
-import {Table, Column, Model, ForeignKey, NotNull, BelongsTo, HasMany} from 'sequelize-typescript';
+import {Table, Column, Model, ForeignKey, BelongsTo, HasMany, AllowNull} from 'sequelize-typescript';
 import Country from "./country";
 import Hashtag from "./hashtag";
 import Price from "./price";
@@ -9,15 +9,15 @@ import Event from "./event";
 })
 export default class Company extends Model<Company> {
 
-    @NotNull
+    @AllowNull(false)
     @Column
     code: string;
 
-    @NotNull
+    @AllowNull(false)
     @Column
     name: string;
 
-    @NotNull
+    @AllowNull(false)
     @ForeignKey(() => Country)
     @Column
     country_id: number;

@@ -77,10 +77,10 @@ export class MainBot {
 						process.env.aws_environment = "";
 						// database access
 						process.env.database_name = tokens['database_name'];
-						process.env.db_username = tokens['database_name'];
-						process.env.db_password = tokens['database_name'];
-						process.env.db_host = tokens['database_name'];
-						process.env.db_port = tokens['database_name'];
+						process.env.db_username = tokens['db_username'];
+						process.env.db_password = tokens['db_password'];
+						process.env.db_host = tokens['db_host'];
+						process.env.db_port = tokens['db_port'];
 						resolve();
 					});
 				} else {

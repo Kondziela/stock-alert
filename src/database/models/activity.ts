@@ -1,4 +1,4 @@
-import {Table, Column, Model, ForeignKey, NotNull, BelongsTo} from 'sequelize-typescript';
+import {Table, Column, Model, ForeignKey, BelongsTo, AllowNull} from 'sequelize-typescript';
 import Price from "./price";
 import Event from "./event";
 
@@ -7,11 +7,11 @@ import Event from "./event";
 })
 export default class Activity extends Model<Activity> {
 
-    @NotNull
+    @AllowNull(false)
     @Column
     type: string;
 
-    @NotNull
+    @AllowNull(false)
     @ForeignKey(() => Event)
     @Column
     event_id: number;
@@ -19,7 +19,7 @@ export default class Activity extends Model<Activity> {
     @BelongsTo(() => Event)
     event: Event;
 
-    @NotNull
+    @AllowNull(false)
     @ForeignKey(() => Price)
     @Column
     price_id: number;

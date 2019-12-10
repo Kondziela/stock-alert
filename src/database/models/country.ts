@@ -1,4 +1,4 @@
-import {Table, Column, Model, HasMany, NotNull} from 'sequelize-typescript';
+import {Table, Column, Model, HasMany, AllowNull} from 'sequelize-typescript';
 import Company from "./company";
 
 @Table({
@@ -6,11 +6,11 @@ import Company from "./company";
 })
 export default class Country extends Model<Country> {
 
-    @NotNull
+    @AllowNull(false)
     @Column
     country: string;
 
-    @NotNull
+    @AllowNull(false)
     @Column
     active: boolean;
 

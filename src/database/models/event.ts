@@ -1,4 +1,4 @@
-import {Table, Column, Model, ForeignKey, NotNull, BelongsTo, HasOne} from 'sequelize-typescript';
+import {Table, Column, Model, ForeignKey, BelongsTo, HasOne, AllowNull} from 'sequelize-typescript';
 import Company from "./company";
 import Activity from "./activity";
 import Tweet from "./tweet";
@@ -8,15 +8,15 @@ import Tweet from "./tweet";
 })
 export default class Event extends Model<Event> {
 
-    @NotNull
+    @AllowNull(false)
     @Column
     created_date: Date;
 
-    @NotNull
+    @AllowNull(false)
     @Column
     type: string;
 
-    @NotNull
+    @AllowNull(false)
     @ForeignKey(() => Company)
     @Column
     company_id: number;

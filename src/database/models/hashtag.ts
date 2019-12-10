@@ -1,4 +1,4 @@
-import {Table, Column, Model, ForeignKey, NotNull, BelongsTo} from 'sequelize-typescript';
+import {Table, Column, Model, ForeignKey, BelongsTo, AllowNull} from 'sequelize-typescript';
 import Company from "./company";
 
 @Table({
@@ -6,11 +6,11 @@ import Company from "./company";
 })
 export default class Hashtag extends Model<Hashtag> {
 
-    @NotNull
+    @AllowNull(false)
     @Column
     hashtag: string;
 
-    @NotNull
+    @AllowNull(false)
     @ForeignKey(() => Company)
     @Column
     company_id: number;

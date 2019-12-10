@@ -41,12 +41,15 @@ export class SequelizeConnection {
 
     public createDatabase() {
         mysql.createConnection({
-
+            host: process.env.db_host,
+            user: process.env.db_username,
+            password: process.env.db_password
         }).then(connection => {
             console.log('Connected to database');
             connection.query('CREATE DATABASE cheeki_breeki')
                 .then(res => {
                     console.log('Database created');
+                    this.close();
                 });
         });
     }
@@ -63,6 +66,7 @@ export class SequelizeConnection {
                 sequelize.query(script.toString(), {})
                     .then(() => {
                         console.log('Tables created successfully');
+                        this.close();
                     });
         })
         });

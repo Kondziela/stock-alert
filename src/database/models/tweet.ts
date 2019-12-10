@@ -1,4 +1,4 @@
-import {Table, Column, Model, ForeignKey, NotNull, BelongsTo} from 'sequelize-typescript';
+import {Table, Column, Model, ForeignKey, BelongsTo, AllowNull} from 'sequelize-typescript';
 import Event from "./event";
 import Company from "./company";
 
@@ -7,27 +7,27 @@ import Company from "./company";
 })
 export default class Tweet extends Model<Tweet> {
 
-    @NotNull
+    @AllowNull(false)
     @Column
     total: number;
 
-    @NotNull
+    @AllowNull(false)
     @Column
     date: Date;
 
-    @NotNull
+    @AllowNull(false)
     @Column
     positive: number;
 
-    @NotNull
+    @AllowNull(false)
     @Column
     negative: number;
 
-    @NotNull
+    @AllowNull(false)
     @Column
     neutral: number;
 
-    @NotNull
+    @AllowNull(false)
     @ForeignKey(() => Event)
     @Column
     event_id: number;
@@ -35,7 +35,7 @@ export default class Tweet extends Model<Tweet> {
     @BelongsTo(() => Event)
     event: Event;
 
-    @NotNull
+    @AllowNull(false)
     @ForeignKey(() => Company)
     @Column
     company_id: number;

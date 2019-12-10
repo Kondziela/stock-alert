@@ -1,15 +1,15 @@
-import {Table, Column, Model, NotNull} from 'sequelize-typescript';
+import {Table, Column, Model, AllowNull} from 'sequelize-typescript';
 
 @Table({
     timestamps: false
 })
 export default class TweetBuff extends Model<TweetBuff> {
 
-    @NotNull
+    @AllowNull(false)
     @Column
     tweet_id: string;
 
-    @NotNull
+    @AllowNull(false)
     @Column
     date: Date;
 
