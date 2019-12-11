@@ -68,27 +68,24 @@ export class Upsert {
         });
     }
 
-    // TODO[AKO]: should be integrated with rest of init load logic
-    public upsertHashtags(hashtags: Array<Object>) {
-        Company.findAll({}).then(companies => {
-            companies.forEach( company => {
-                let hashtag = hashtags.find(h => h['company'].toLowerCase() === company['name'].toLowerCase());
-                if (!hashtag) {
-                    console.error(`No data for company ${company['name']}`);
-                    return;
+    public upsertHashtags(hashtags: Array<{company: string, hashtags: Array<string>, mentions: Array<string>}>, company: Company): Promise<Hashtag[]> {
+        let hashtag = hashtags.find(h => h['company'].toLowerCase() === company['name'].toLowerCase());
+        if (!hashtag) {
+            console.error(`No data for company ${company['name']}`);
+            return;
+        }
+        console.log(`Hashtags for company ${company['name']}: ${hashtag}`);
+        return Promise.all(hashtag['hashtags'].map(h => 
+            new Promise<Hashtag>(resolve => 
+            Hashtag.findOrCreate({
+                where: {
+                    company_id: company.id,
+                    hashtag: h,
+                    type: TwitterType.HASHTAG
                 }
-                console.log(`Hashtags for company ${company['name']}: ${hashtag}`);
-                hashtag['hashtags'].forEach(h => {
-                    Hashtag.findOrCreate({
-                        where: {
-                            company_id: company.id,
-                            hashtag: h,
-                            type: TwitterType.HASHTAG
-                        }
-                    });
-                });
-            });
-        });
+            }).then(result => resolve(result[0]))
+            )
+        ));
     }
 
 }

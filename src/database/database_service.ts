@@ -37,6 +37,14 @@ export class DatabaseService {
 		});
 	}
 
+	public findAllActiveCountries(): Promise<Array<Country>> {
+		return Country.findAll({
+			where: {
+                active: true
+            }
+		});
+	}
+
 	public findPricesForCompanyAfterDate(company: Company, date: Date): Promise<Array<Price>> {
 		return Price.findAll({
 			where: {

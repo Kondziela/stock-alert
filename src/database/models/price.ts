@@ -16,11 +16,11 @@ export default class Price extends Model<Price> {
 
     @AllowNull(false)
     @Column
-    max: number;
+    high: number;
 
     @AllowNull(false)
     @Column
-    min: number;
+    low: number;
 
     @AllowNull(false)
     @Column
