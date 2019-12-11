@@ -16,33 +16,38 @@ export class Upsert {
     public upsertCountry(countries: Array<JSON>): Promise<Country[]> {
         return Promise.all(countries.map(country => {
                 console.log(`Starting processing for ${country['country']}`);
-                return Country.findOrCreate({
-                    where: {
-                        country: country['country']
-                    },
-                    defaults: {
-                        active: country['active']
-                    }
-                });
+                return new Promise<Country>(resolve => {
+                    Country.findOrCreate({
+                        where: {
+                            country: country['country']
+                        },
+                        defaults: {
+                            active: country['active']
+                        }
+                    }).then(response => resolve(response[0]))
+                })
             })
         );
     }
 
     public upsertCompanies(country: Country, companies: Array<JSON>): Promise<Company[]> {
         return Promise.all(companies.map(company => {
-            console.log(`Starting processing for ${company['name']}`);
-                return Company.findOrCreate({
-                    where: {
-                        code: company['code'],
-                        name: company['name'],
-                        country_id: country.id
-                    }
-                });
+                console.log(`Starting processing for ${company['name']}`);
+                return new Promise<Company>(resolve => {
+                    Company.findOrCreate({
+                        where: {
+                            code: company['code'],
+                            name: company['name'],
+                            country_id: country.id
+                        }
+                    }).then(response => resolve(response[0]))
+                })
             })
         );
     }
 
     public upsertPrices(company: Company, startDate: string): Promise<void> {
+        console.log(company);
         let apiFunctions = this.apiForMarket.getAPIFunctionForMarket(company['country']['country']);
 
         return new Promise<void>( (resolve, reject) => {

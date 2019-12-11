@@ -4,6 +4,7 @@ import * as path from 'path';
 import {Upsert} from "../database/upsert";
 import {MainBot} from "../main_bot";
 import Company from '../database/models/company';
+import Country from "../database/models/country";
 
 /**
  * Script for initial load. Loads:
@@ -34,27 +35,27 @@ export class InitLoad {
             .catch((err) => console.error(err));
     }
 
-    private loadCountries(): Promise<Object[]> {
+    private loadCountries(): Promise<Country[]> {
         let countries = JSON.parse(fs.readFileSync(path.join(__dirname, 'json', 'countries.json'), 'utf-8').toString())
         console.log('Load countries');
         return this.upsert.upsertCountry(countries);
     }
 
-    private loadCompanies(countries: Object[]): Promise<Company[][]> {
+    private loadCompanies(countries: Country[]): Promise<Company[][]> {
         let countriesList = countries.filter( o => o['active']);
-        console.log('Load companies');
+        console.log(`Load companies for ${countriesList.length} countries`);
         return Promise.all(countriesList.map( country => this.loadCompaniesForCountry(country)));
     }
 
     private loadCompaniesForCountry(country): Promise<Company[]> {
         let companies = JSON.parse(fs.readFileSync(path.join(__dirname,'json', `companies${country.country}.json`)).toString());
-        console.log('Upset companies');
+        console.log(`Upset companies for ${country.country}`);
         return this.upsert.upsertCompanies(country, companies);
     }
 
     private loadHistoricalDate(companies: Array<Array<Company>>): Promise<void[]> {
         let companiesList = companies.length ? companies.reduce( (a, b) => a.concat(b)) : [];
-        console.log('Analyze companies: ');
+        console.log(`Load historical prices for ${companiesList.length} companies`);
         return Promise.all(companiesList.map(company => {
             this.upsert.upsertPrices(company, this.STARTING_DATE_FOR_PRICES)
         }));
