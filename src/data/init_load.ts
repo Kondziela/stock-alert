@@ -16,7 +16,7 @@ import Hashtag from '../database/models/hashtag';
  * WARNIGN: not all companies have all historical data in Tiingo e.g. DELL.
  */
 export class InitLoad {
-    private STARTING_DATE_FOR_PRICES = '2019-06-01';
+    private STARTING_DATE_FOR_PRICES = '2014-01-01';
     private upsert: Upsert;
     private database: DatabaseService;
 
@@ -54,11 +54,25 @@ export class InitLoad {
         return this.upsert.upsertCompanies(country, companies);
     }
 
-    private loadHistoricalDate(): Promise<void[]> {
+    private loadHistoricalDate(): Promise<void> {
         return this.database.findActiveCompanies().then(companiesList => {
             console.log(`Load historical prices for ${companiesList.length} companies`);
-            return Promise.all(companiesList.map(company => this.upsert.upsertPrices(company, this.STARTING_DATE_FOR_PRICES)));
+            return this.loadPricesForCompany(companiesList, 0);
         });
+    }
+
+    private loadPricesForCompany(companiesList, index): Promise<void> {
+        return new Promise<void>(resolve => {
+            if (index < companiesList.length) {
+                this.upsert.upsertPrices(companiesList[index], this.STARTING_DATE_FOR_PRICES)
+                    .then(() => {
+                        this.loadPricesForCompany(companiesList, ++index).then(() => resolve());
+                    })
+            } else {
+                resolve();
+            }
+        });
+
     }
 
     private loadHashtags(): Promise<Hashtag[][]> {

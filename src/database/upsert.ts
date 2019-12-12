@@ -4,6 +4,7 @@ import Price from "./models/price";
 import Hashtag from './models/hashtag';
 import {ApiForMarket} from "../utils/api_for_market";
 import { TwitterType } from './twitter_type';
+import {Op} from "sequelize";
 
 export class Upsert {
 
@@ -47,7 +48,6 @@ export class Upsert {
     }
 
     public upsertPrices(company: Company, startDate: string): Promise<void> {
-        console.log(company);
         let apiFunctions = this.apiForMarket.getAPIFunctionForMarket(company['country']['country']);
 
         return new Promise<void>( (resolve, reject) => {
@@ -60,7 +60,23 @@ export class Upsert {
                         price['company_id'] = company.id;
                         console.log(`Processing ${index + 1}/${prices.length}. ${price['date']}`);
                         return Price.findOrCreate({
-                            where: price
+                            where: {
+                                company_id: company.id,
+                                date: price['date'],
+                                open: {
+                                    [Op.like]: price['open']
+                                },
+                                close: {
+                                    [Op.like]: price['close']
+                                },
+                                high: {
+                                    [Op.like]: price['high']
+                                },
+                                low: {
+                                    [Op.like]: price['low']
+                                },
+                                volume: price['volume']
+                            }
                         });
                     })).then(() => resolve())
                     .catch((err) => console.error(err));

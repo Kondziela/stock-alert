@@ -11,6 +11,10 @@ export default class Hashtag extends Model<Hashtag> {
     hashtag: string;
 
     @AllowNull(false)
+    @Column
+    type: string;
+
+    @AllowNull(false)
     @ForeignKey(() => Company)
     @Column
     company_id: number;

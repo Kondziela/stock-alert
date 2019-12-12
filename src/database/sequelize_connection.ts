@@ -18,7 +18,11 @@ export class SequelizeConnection {
                     port: parseInt(process.env.db_port),
                     models: [__dirname + '/models'],
                     dialectOptions: {
-                        multipleStatements: true
+                        multipleStatements: true,
+                        requestTimeout: 600000
+                    },
+                    pool: {
+                        acquire: 600000
                     }
                 });
                 this.sequelize.authenticate()
