@@ -5,6 +5,10 @@ import Hashtag from './models/hashtag';
 import {ApiForMarket} from "../utils/api_for_market";
 import { TwitterType } from './twitter_type';
 import {Op} from "sequelize";
+import Event from "./models/event";
+import {EventType} from "./event_type";
+import {ActivityType} from "./activity_type";
+import Activity from "./models/activity";
 
 export class Upsert {
 
@@ -62,21 +66,11 @@ export class Upsert {
                         return Price.findOrCreate({
                             where: {
                                 company_id: company.id,
-                                date: price['date'],
-                                open: {
-                                    [Op.like]: price['open']
-                                },
-                                close: {
-                                    [Op.like]: price['close']
-                                },
-                                high: {
-                                    [Op.like]: price['high']
-                                },
-                                low: {
-                                    [Op.like]: price['low']
-                                },
-                                volume: price['volume']
-                            }
+                                date: {
+                                    [Op.eq]: new Date(price['date'])
+                                }
+                            },
+                            defaults: price
                         });
                     })).then(() => resolve())
                     .catch((err) => console.error(err));
@@ -102,6 +96,33 @@ export class Upsert {
             }).then(result => resolve(result[0]))
             )
         ));
+    }
+
+    public upsertEvent(company: Company, theNewestValue: Price): Promise<Array<any>> {
+            return Event.findOrCreate({
+                where: {
+                    company_id: company.id,
+                    created_date: {
+                        [Op.eq]: new Date(theNewestValue.date)
+                    },
+                    type: EventType.ACTIVITY
+                },
+                defaults: {
+                    company_id: company.id,
+                    created_date: theNewestValue.date,
+                    type: EventType.ACTIVITY
+                }
+            });
+    }
+
+    public upsertActivity(event: Event, price: Price, key: string): Promise<Activity> {
+        return Activity.findOrCreate({
+            where: {
+                type: ActivityType[key],
+                event_id: event.id,
+                price_id: price.id
+            }
+        });
     }
 
 }

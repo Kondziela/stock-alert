@@ -1,7 +1,8 @@
 import {Table, Column, Model, AllowNull} from 'sequelize-typescript';
 
 @Table({
-    timestamps: false
+    timestamps: false,
+    tableName: 'TweetBuffs'
 })
 export default class TweetBuff extends Model<TweetBuff> {
 

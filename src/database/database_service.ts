@@ -9,6 +9,7 @@ import { TwitterType } from './twitter_type';
 import {Sequelize} from "sequelize-typescript";
 import { SequelizeConnection } from './sequelize_connection';
 import Country from './models/country';
+import {Op} from "sequelize";
 
 export class DatabaseService {
 
@@ -49,7 +50,7 @@ export class DatabaseService {
 		return Price.findAll({
 			where: {
 				date: {
-					$gte: date.toString()
+					[Op.gte]: date
 				},
 				company_id: company.id
 			},
@@ -62,7 +63,9 @@ export class DatabaseService {
 	public findEventsByDate(date: Date): Promise<Array<Event>> {
 		return Event.findAll({
 			where: {
-				date: date.toString()
+				date: {
+					[Op.eq]: date
+				}
 			}
 		});
 	}
@@ -88,7 +91,9 @@ export class DatabaseService {
             TweetBuff.findOne({
 				where: {
 					tweet_id: tweetBuff['id'],
-					date: tweetBuff['date']
+					date: {
+						[Op.eq]: tweetBuff['date']
+					}
 				}
 			}).then((data) => {
 				if (data) {
@@ -116,7 +121,7 @@ export class DatabaseService {
 		return TweetBuff.destroy({
 			where: {
 				date: {
-					$lt: lastDate.toString()
+					[Op.lt]: lastDate
 				}
 			}
 		});

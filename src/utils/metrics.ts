@@ -1,3 +1,5 @@
+import Price from "../database/models/price";
+
 export class Metric {
 	private minElement(allValues: Array<any>, field: string): number{
 		return allValues.reduce( (o1, o2) => o1[field] < o2[field] ? o1 : o2 );
@@ -5,10 +7,10 @@ export class Metric {
 	private maxElement(allValues: Array<any>, field: string): number {
 		return allValues.reduce( (o1, o2) => o1[field] > o2[field] ? o1 : o2 );
 	}
-	private averageValue(values: Array<any>, field: string): number {
+	private averageValue(values: Array<Price>, field: string): number {
 		return values.map( value => value[field]).reduce( (a, b) => a + b, 0) / values.length;
 	}
-	private averageOfDays(values: Array<any>, days: number, offset: number): number {
+	private averageOfDays(values: Array<Price>, days: number, offset: number): number {
 		return this.averageValue(values.slice(0 + offset, days), 'close');
 	}
 	private bottomIntersectionOfMean(mainToday: number, mainYesterday: number, intersectionToday: number, intersectionYesterday: number): boolean {
@@ -24,7 +26,7 @@ export class Metric {
 				max: max
 			}
 	}
-	public bottomIntersectionOfMeanByDays(allValues: Array<any>, mainCount: number, intersectionCount: number): boolean {
+	public bottomIntersectionOfMeanByDays(allValues: Array<Price>, mainCount: number, intersectionCount: number): boolean {
 		let intersectionToday: 		number = this.averageOfDays(allValues, mainCount, 0),
 			intersectionYesterday: 	number = this.averageOfDays(allValues, mainCount, 1),
 			mainToday: 				number = this.averageOfDays(allValues, intersectionCount, 0),
@@ -32,24 +34,24 @@ export class Metric {
 
 		return this.bottomIntersectionOfMean(mainToday, mainYesterday, intersectionToday, intersectionYesterday);
 	}
-	public medianLowPercent(todayObject: any, allValues: Array<any>, percent: number): boolean {
+	public medianLowPercent(todayObject: Price, allValues: Array<Price>, percent: number): boolean {
 		let index = allValues.findIndex((object) => object.date == todayObject.date);
 
 		return (1 - (index/allValues.length)) < percent;
 	}
-	public volumeIncrease(allValues: Array<any>, ratio: number): boolean {
+	public volumeIncrease(allValues: Array<Price>, ratio: number): boolean {
 		let today = allValues[0],
 			yesterday = allValues[1];
 
 		return today.volume > yesterday.volume * ratio;
 	}
-	public dailyRaise(today: any, ratio: number): boolean {
+	public dailyRaise(today: Price, ratio: number): boolean {
 		return today.close > (today.open + (today.open * ratio));
 	}
-	public dailyFall(today: any, ratio: number): boolean {
+	public dailyFall(today: Price, ratio: number): boolean {
 		return today.close < (today.open - (today.open * ratio));
 	}
-	public holeInChart(allValues: Array<any>, ratio: number): boolean {
+	public holeInChart(allValues: Array<Price>, ratio: number): boolean {
 		let todaysOpen = allValues[0].open,
 			yesterdayClose = allValues[1].close;
 
