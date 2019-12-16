@@ -17,6 +17,7 @@ export class AnalyzeBot {
         this.util = new Util();
         this.analyzeService = new AnalyzeService();
         this.databaseService = new DatabaseService();
+        this.upsert = new Upsert();
     }
 
     public run(): Promise<void> {

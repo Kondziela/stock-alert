@@ -60,22 +60,21 @@ export class DatabaseService {
 		});
 	}
 
-	public findEventsByDate(date: Date): Promise<Array<Event>> {
-		return Event.findAll({
-			where: {
-				date: {
-					[Op.eq]: date
-				}
-			}
-		});
-	}
-
-	public findActivityByEvent(event: Event): Promise<Array<Activity>> {
+	public findActivitiesByDate(date: Date): Promise<Array<Activity>> {
+		console.log('Servus', date);
 		return Activity.findAll({
-			where: {
-				event_id: event.id
-			}
-		});
+			include: [{
+				model: Event,
+				where: {
+					created_date: {
+						[Op.eq]: date
+					}
+				},
+				include: [{
+					model: Company
+				}]
+			}]
+		})
 	}
 
 	public findHashtagsWithCompany(): Promise<Array<Hashtag>> {

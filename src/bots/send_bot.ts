@@ -22,17 +22,14 @@ export class SendingBot {
         return new Promise<void>((resolve, reject) => {
 
             console.log("Start sending bot");
-            this.database.findEventsByDate(new Date(this.util.yesterday())).then((events) => {
-                console.log(`Number of processing events: ${events.length}`);
-                Promise.all(events.map(event => this.database.findActivityByEvent(event))).then((activities: Array<Array<Activity>>) => {
-                    let activitiesArray = activities.length ? (activities.reduce((a, b) => a.concat(b))) : [],
-                        companyActivities = this.groupByCompany(activitiesArray),
-                        slackResponse = this.userService.slackResponse(companyActivities);
+            this.database.findActivitiesByDate(new Date(this.util.yesterday())).then((activities) => {
+                console.log(`Number of processing activities: ${activities.length}`);
+                let companyActivities = this.groupByCompany(activities),
+                    slackResponse = this.userService.slackResponse(companyActivities);
 
-                    console.log(slackResponse);
-                    this.slackSender.sendToSlack(slackResponse);
-                    resolve();
-                }).catch( err => reject(err));
+                console.log(slackResponse);
+                this.slackSender.sendToSlack(slackResponse);
+                resolve();
             }).catch( err => reject(err));
         });
     }
@@ -47,7 +44,6 @@ export class SendingBot {
             }
             companyActivities[company].push(activity['type']);
         });
-        console.log(`Activity: ${companyActivities}`);
         return companyActivities;
     }
 
