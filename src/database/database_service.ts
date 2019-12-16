@@ -81,17 +81,23 @@ export class DatabaseService {
 		return Hashtag.findAll({
 			where: {
 				type: TwitterType.HASHTAG
-			}
+			},
+			include: [{
+				model: Company
+			}]
 		});
 	}
 
 	public processTweetAndInformIfNotExist(tweetBuff: Object): Promise<void> {
+		console.log(tweetBuff);
 	    return new Promise<void>( (resolve, reject) => {
             TweetBuff.findOne({
 				where: {
-					tweet_id: tweetBuff['id'],
+					tweet_id: {
+						[Op.eq]: tweetBuff['tweet_id']
+					},
 					date: {
-						[Op.eq]: tweetBuff['date']
+						[Op.eq]: new Date(tweetBuff['date'])
 					}
 				}
 			}).then((data) => {
@@ -105,15 +111,6 @@ export class DatabaseService {
 				}
 			});
         });
-	}
-	
-	public findTweetAggregateForCompanyAndDate(company: Object, date: Date): Promise<Tweet> {
-		return Tweet.findOne({
-			where: {
-				company_id: company['id'],
-				date: date.toString()
-			}
-		});
 	}
 
 	public deleteTweetsBuffOlderThat(lastDate: Date): Promise<void> {

@@ -27,7 +27,7 @@ export default class Tweet extends Model<Tweet> {
     @Column
     neutral: number;
 
-    @AllowNull(false)
+    @AllowNull(true)
     @ForeignKey(() => Event)
     @Column
     event_id: number;

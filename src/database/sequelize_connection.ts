@@ -9,6 +9,7 @@ export class SequelizeConnection {
     public getConnection(): Promise<Sequelize> {
         return new Promise<Sequelize>((resolve, reject) => {
             if (!this.sequelize) {
+                console.log('Create new Databse connection');
                 this.sequelize = new Sequelize({
                     database: process.env.database_name,
                     dialect: 'mysql',
@@ -40,6 +41,7 @@ export class SequelizeConnection {
     }
 
     public close(): Promise<void> {
+        console.log('Close database connection');
         return this.sequelize.close();
     }
 

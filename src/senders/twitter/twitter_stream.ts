@@ -67,7 +67,7 @@ export class TwitterStream extends TwitterSuit {
                 
             if (companies.length) {
                 console.log(`Tweet matchs with ${companies.length} companies`);
-                this.database.processTweetAndInformIfNotExist({id: tweet['id'], date: tweet['date']})
+                this.database.processTweetAndInformIfNotExist({tweet_id: tweet['id'], date: tweet['date']})
                     .then(() => {
                         let analyze = this.sentiment.analyze(tweet['text']),
                             tweetDate = new Date(tweet['date'].toISOString().substr(0, 10));
@@ -97,6 +97,7 @@ export class TwitterStream extends TwitterSuit {
             tweet['neutral']++;
         }
         tweet['total']++;
+        console.log(tweet['dataValues']);
         return tweet;
     }
 
@@ -123,7 +124,23 @@ export class TwitterStream extends TwitterSuit {
                     neutral: 0
                 }
             }).then(tweet => {
-                this.processSentiment(tweet, analyze['score']).save().then(() => () => resolve());
+                let tweetObject = this.processSentiment(tweet[0], analyze['score']);
+                console.log({
+                    total: tweetObject.total,
+                    positive: tweetObject.positive,
+                    negative: tweetObject.negative,
+                    neutral: tweetObject.neutral
+                });
+                Tweet.update({
+                    total: tweetObject.total,
+                    positive: tweetObject.positive,
+                    negative: tweetObject.negative,
+                    neutral: tweetObject.neutral
+                },{
+                    where: {
+                        id: tweetObject.id
+                    }
+                }).then(() => resolve()).catch(err => console.error(err));
             })
         );
     }

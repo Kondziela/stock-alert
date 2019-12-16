@@ -8,7 +8,7 @@ export default class TweetBuff extends Model<TweetBuff> {
 
     @AllowNull(false)
     @Column
-    tweet_id: string;
+    tweet_id: String;
 
     @AllowNull(false)
     @Column
