@@ -13,6 +13,7 @@ export class DBCleanerBot {
     }
 
     public run(): Promise<void> {
+        console.log('Start DB Cleaner');
         return new Promise<void>(resolve => {
             let lastDate = this.util.dateXDayAgo(3);
             this.database.deleteTweetsBuffOlderThat(new Date(lastDate)).then(() => resolve());

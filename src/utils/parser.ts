@@ -1,5 +1,3 @@
-import * as htmlParser from 'node-html-parser';
-
 export class Parser {
 
 	public parseTiingoResponse(body: string): Array<object> { 

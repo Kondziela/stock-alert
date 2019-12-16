@@ -1,4 +1,5 @@
 import { Metric }  from '../utils/metrics';
+import Price from '../database/models/price';
 
 export class AnalyzeService {
 
@@ -16,53 +17,53 @@ export class AnalyzeService {
 	/**
 	 * Check if current value is in low group of yearly median values.
 	 */
-	private medianLowPercent(todaysValue: object, allValues: Array<object>): boolean {
+	private medianLowPercent(todaysValue: Price, allValues: Array<Price>): boolean {
 		return  this.metric.medianLowPercent(todaysValue, allValues, this.MEDIAN_PERCENT);
 	}
 	/**
 	 * Check if today was bottom intersection of mean. If yesterday value was under average value and today is upper then true.
 	 */
-	private bottomIntersectionOfMean(allValues: Array<object>): boolean {
+	private bottomIntersectionOfMean(allValues: Array<Price>): boolean {
 		return this.metric.bottomIntersectionOfMeanByDays(allValues, this.AVERAGE_DAYS, 1);
 	}
 	/**
 	 * Check if 20 days mean was bottom intersection of 5 days mean.
 	 */
-	private bottomIntersectionOfMean5And20(allValues: Array<object>): boolean {
+	private bottomIntersectionOfMean5And20(allValues: Array<Price>): boolean {
 		return this.metric.bottomIntersectionOfMeanByDays(allValues, 20, 5);
 	}
 	/**
 	 * Check if 200 days mean was bottom intersection of 50 days mean.
 	 */
-	private bottomIntersectionOfMean50And200(allValues: Array<object>): boolean {
+	private bottomIntersectionOfMean50And200(allValues: Array<Price>): boolean {
 		return this.metric.bottomIntersectionOfMeanByDays(allValues, 200, 50);
 	}
 	/**
 	 * Check if volument increases today.
 	 */
-	private volumeIncrease(allValues: Array<object>): boolean {
+	private volumeIncrease(allValues: Array<Price>): boolean {
 		return this.metric.volumeIncrease(allValues, this.VOLUME_INCREASE_RATIO);
 	}
 	/**
 	 * Check if today was big price raise.
 	 */
-	private dailyRaise(today: object): boolean {
+	private dailyRaise(today: Price): boolean {
 		return this.metric.dailyRaise(today, this.DAILY_CHANGE_RATIO);
 	}
 	/**
 	 * Check if today was big price fall.
 	 */
-	private dailyFall(today: object): boolean {
+	private dailyFall(today: Price): boolean {
 		return this.metric.dailyFall(today, this.DAILY_CHANGE_RATIO);
 	}
 	/**
 	 * Check if between today and yesterday was hole on chart.
 	 */
-	private holeInChart(allValues: Array<object>): boolean {
+	private holeInChart(allValues: Array<Price>): boolean {
 		return this.metric.holeInChart(allValues, this.HOLE_CHANGE);
 	}
 
- 	public analizeCompany(allValues: Array<any>, todaysValue: object): object {
+ 	public analizeCompany(allValues: Array<Price>, todaysValue: Price): object {
 		return  {
 				PRICE_MEDIAN_LOW: this.medianLowPercent(todaysValue, [...allValues]),
 				BOTTOM_INTER_MEAN: this.bottomIntersectionOfMean([...allValues]),
