@@ -40,27 +40,27 @@ export class TwitterStream extends TwitterSuit {
         console.log('Tweeter Stream created');
 
         stream.on('tweet', (originalTweet) => {
-            this.logger.logMemory('Tweet receive');
+            me.logger.logMemory('Tweet receive');
             me.queue.push(originalTweet)
         });
         stream.on('connect', () => {
-            this.logger.log('Connected with Twitter');
-            this.logger.logMemory('Twitter connect');
+            me.logger.log('Connected with Twitter');
+            me.logger.logMemory('Twitter connect');
             console.log('Connected with Twitter')
         });
         stream.on('reconnect', () => {
-            this.logger.log('Reconnected with Twitter');
-            this.logger.logMemory('Twitter reconnect');
+            me.logger.log('Reconnected with Twitter');
+            me.logger.logMemory('Twitter reconnect');
             console.log('Reconnect with Twitter')
         });
         stream.on('limit', () => {
-            this.logger.log('Twitter limit');
-            this.logger.logMemory('Twitter limit');
+            me.logger.log('Twitter limit');
+            me.logger.logMemory('Twitter limit');
             console.log('Twitter limit')
         });
         stream.on('disconnect', () => {
-            this.logger.log('Twitter disconnect');
-            this.logger.logMemory('Twitter disconnect');
+            me.logger.log('Twitter disconnect');
+            me.logger.logMemory('Twitter disconnect');
             console.log('Twitter disconnect')
         });
 
@@ -70,7 +70,7 @@ export class TwitterStream extends TwitterSuit {
 
     private handleQueue(): void {
         let tweet = this.queue.shift();
-        console.log(`Size of Queue: ${this.queue.length}`);
+        console.log(`Size of Queue: ${this.queue.length} at ${new Date().toISOString()}`);
         if (tweet) {
             this.handleTweet(tweet)
                 .then(() => this.handleQueue())
