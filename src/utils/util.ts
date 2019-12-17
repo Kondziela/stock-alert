@@ -8,15 +8,14 @@
 	}
 
 	public today(): string {
-		return this.dateXDayAgo(0);
+		return this.dateXDayAgo(0, new Date());
 	}
 
 	public yesterday(): string {
-		return this.dateXDayAgo(1);
+		return this.dateXDayAgo(1, new Date());
 	}
 
-	public dateXDayAgo(daysAgo: number): string {
-	 	let date =  new Date();
+	public dateXDayAgo(daysAgo: number, date: Date): string {
 		date.setDate(date.getDate() - daysAgo);
 		return date.toISOString().substring(0, 10);
 	}

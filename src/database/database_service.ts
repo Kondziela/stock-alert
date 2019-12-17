@@ -46,11 +46,12 @@ export class DatabaseService {
 		});
 	}
 
-	public findPricesForCompanyAfterDate(company: Company, date: Date): Promise<Array<Price>> {
+	public findPricesForCompanyBetweenDate(company: Company, startDate: Date, endDate: Date): Promise<Array<Price>> {
 		return Price.findAll({
 			where: {
 				date: {
-					[Op.gte]: date
+					[Op.gte]: startDate,
+					[Op.lte]: endDate
 				},
 				company_id: company.id
 			},

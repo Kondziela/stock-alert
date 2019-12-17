@@ -36,7 +36,7 @@ export class AnalyzeBot {
 
     private processPricesForCompany(company: Company): Promise<void> {
         return new Promise<void>( (resolve, reject) => {
-            this.databaseService.findPricesForCompanyAfterDate(company, new Date(this.util.oneYearAgo()))
+            this.databaseService.findPricesForCompanyBetweenDate(company, new Date(this.util.oneYearAgo()), new Date())
                 .then( prices => {
                     console.log(`Find prices for company ${company['name']}`);
                     this.countMetrics(company, prices).then( () => {
@@ -46,7 +46,7 @@ export class AnalyzeBot {
         });
     }
 
-    private countMetrics(company: Company, allValues: Array<Price>): Promise<void> {
+    public countMetrics(company: Company, allValues: Array<Price>): Promise<void> {
         let theNewestValue = allValues[0],
             analize = this.analyzeService.analizeCompany([...allValues], theNewestValue),
             analyzeKeys = Object.keys(analize).filter(key => analize[key]);
