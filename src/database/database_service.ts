@@ -62,7 +62,6 @@ export class DatabaseService {
 	}
 
 	public findActivitiesByDate(date: Date): Promise<Array<Activity>> {
-		console.log('Servus', date);
 		return Activity.findAll({
 			include: [{
 				model: Event,

@@ -16,8 +16,9 @@
 	}
 
 	public dateXDayAgo(daysAgo: number, date: Date): string {
-		date.setDate(date.getDate() - daysAgo);
-		return date.toISOString().substring(0, 10);
+	 	let dateXAgo = new Date(date);
+		dateXAgo.setDate(date.getDate() - daysAgo);
+		return dateXAgo.toISOString().substring(0, 10);
 	}
 
 	public isDateToday(date: Date): boolean {

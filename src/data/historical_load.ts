@@ -29,12 +29,14 @@ export class HistoricalData {
     private countHistoricalForCompany(company: Company, date: Date): void {
         let dateYearAgo = new Date(this.util.dateXDayAgo(this.ONE_YEAR, date));
         this.databaseService.findPricesForCompanyBetweenDate(company, dateYearAgo, date).then(prices => {
+            console.log(`Found ${prices.length} prices`);
             if (prices.length < this.MINIMUM_PRICES) {
                 return;
             }
             this.analyzeBot.countMetrics(company, prices).then(() => {
                 let dayBefore = new Date(this.util.dateXDayAgo(1, date));
                 this.countHistoricalForCompany(company, dayBefore);
+                console.log(`Counted metrics for ${company.name} ${date}`);
             })
         });
     }
