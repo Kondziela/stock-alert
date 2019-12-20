@@ -9,7 +9,7 @@ import { TwitterType } from './twitter_type';
 import {Sequelize} from "sequelize-typescript";
 import { SequelizeConnection } from './sequelize_connection';
 import Country from './models/country';
-import {Op} from "sequelize";
+import {Op, fn, col} from "sequelize";
 
 export class DatabaseService {
 
@@ -73,6 +73,18 @@ export class DatabaseService {
 				include: [{
 					model: Company
 				}]
+			}]
+		})
+	}
+
+	public findMinDateOfEvent(company: Company): any {
+		return Event.findAll({
+            attributes: [[fn('MIN', col('created_date')), 'minDate']],
+			include: [{
+            	model: Company,
+				where: {
+            		name: company.name
+				}
 			}]
 		})
 	}

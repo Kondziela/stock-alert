@@ -21,7 +21,13 @@ export class HistoricalData {
     public countHistorical() {
         this.databaseService.init().then(() => {
             this.databaseService.findActiveCompanies().then(companies => {
-                companies.forEach(company => this.countHistoricalForCompany(company, new Date()));
+                companies.forEach(company => {
+                    this.databaseService.findMinDateOfEvent(company).then(result => {
+                        let lastDate = result[0].get('minDate') || new Date();
+                        console.log(`${company.name}: ${lastDate}`);
+                        this.countHistoricalForCompany(company, new Date(lastDate))
+                    })
+                });
             })
         });
     }
