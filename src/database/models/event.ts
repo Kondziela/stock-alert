@@ -1,4 +1,4 @@
-import {Table, Column, Model, ForeignKey, BelongsTo, HasOne, AllowNull} from 'sequelize-typescript';
+import {Table, Column, Model, ForeignKey, BelongsTo, HasOne, AllowNull, HasMany} from 'sequelize-typescript';
 import Company from "./company";
 import Activity from "./activity";
 import Tweet from "./tweet";
@@ -24,7 +24,7 @@ export default class Event extends Model<Event> {
     @BelongsTo(() => Company)
     company: Company;
 
-    @HasOne(() => Activity)
+    @HasMany(() => Activity)
     activity: Activity;
 
     @HasOne(() => Tweet)

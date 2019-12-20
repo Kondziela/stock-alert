@@ -9,7 +9,7 @@ import { TwitterType } from './twitter_type';
 import {Sequelize} from "sequelize-typescript";
 import { SequelizeConnection } from './sequelize_connection';
 import Country from './models/country';
-import {Op} from "sequelize";
+import {Op, fn, col} from "sequelize";
 
 export class DatabaseService {
 
@@ -46,11 +46,12 @@ export class DatabaseService {
 		});
 	}
 
-	public findPricesForCompanyAfterDate(company: Company, date: Date): Promise<Array<Price>> {
+	public findPricesForCompanyBetweenDate(company: Company, startDate: Date, endDate: Date): Promise<Array<Price>> {
 		return Price.findAll({
 			where: {
 				date: {
-					[Op.gte]: date
+					[Op.gte]: startDate,
+					[Op.lte]: endDate
 				},
 				company_id: company.id
 			},
@@ -61,7 +62,6 @@ export class DatabaseService {
 	}
 
 	public findActivitiesByDate(date: Date): Promise<Array<Activity>> {
-		console.log('Servus', date);
 		return Activity.findAll({
 			include: [{
 				model: Event,
@@ -73,6 +73,18 @@ export class DatabaseService {
 				include: [{
 					model: Company
 				}]
+			}]
+		})
+	}
+
+	public findMinDateOfEvent(company: Company): any {
+		return Event.findAll({
+            attributes: [[fn('MIN', col('created_date')), 'minDate']],
+			include: [{
+            	model: Company,
+				where: {
+            		name: company.name
+				}
 			}]
 		})
 	}
