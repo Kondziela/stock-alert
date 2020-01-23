@@ -29,6 +29,21 @@ export class Logger {
         }
     }
 
+    public logMemory(source: string): void {
+        if (!process.env.aws_environment) {
+            fs.appendFile(path.join(this.LOG_DIR, `memory.log`), this.formatMessage(this.memoryMessage(source)), (err) => {
+                if (err) {
+                    console.error('Error when logging', err);
+                }
+            })
+        }
+    }
+
+    private memoryMessage(source: string): String {
+        let memory = process.memoryUsage();
+        return `[${source}] rrs: ${memory['rss']}, heapTotal: ${memory['heapTotal']}, heapUsed: ${memory['heapUsed']}, external: ${memory['external']}`;
+    }
+
     private formatMessage(text: Object): String {
         return `${new Date().toISOString()}: ${JSON.stringify(text)}\n`;
     }

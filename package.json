@@ -4,31 +4,34 @@
   "description": "Analyse and inform about stock trade",
   "main": "index.js",
   "dependencies": {
-    "@types/node": "^12.12.7",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
-    "junit": "^1.4.9",
     "ml-regression": "^5.0.0",
-    "mongoose": "^5.7.11",
-    "node-cron": "^2.0.3",
-    "node-html-parser": "^1.1.16",
+    "mysql2": "^2.0.2",
     "nodemailer": "^6.3.0",
     "path": "^0.12.7",
+    "reflect-metadata": "^0.1.13",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "sentiment": "^5.0.2",
+    "sequelize": "^5.21.2",
+    "sequelize-typescript": "^1.0.0",
     "slack-node": "^0.1.8",
-    "twit": "^2.2.11",
+    "twit": "^2.2.11"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.7",
+    "junit": "^1.4.9",
     "typescript": "^3.7.2"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "junit test/*.js",
     "watch": "tsc -w -p .",
     "start-local": "tsc; cp src/data/tokens.json dist/data; node dist/start_bots.js",
     "schedule": "tsc; node dist/start_bots.js",
     "start": "tsc; node dist/run_server.js",
-    "init-load": "tsc; cp src/data/tokens.json dist/data; cp -R src/data/json dist/data/; node dist/start_init_load.js"
+    "init-load": "tsc; cp src/data/tokens.json dist/data; cp -R src/data/json dist/data/; node dist/start_init_load.js",
+    "start-twitter": "tsc; node --max-old-space-size=128 dist/start_twitter_bot.js" 
   },
   "repository": {
     "type": "git",

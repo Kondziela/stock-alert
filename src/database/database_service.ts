@@ -1,92 +1,137 @@
-import * as mongoose from 'mongoose';
-require('./schema/company');
-import Country from './schema/country';
-import Company from './schema/company';
-import Price from './schema/price';
-import Event from './schema/event';
-import Activity from './schema/activity';
-import Hashtag from './schema/hashtag';
-import Tweet from './schema/tweet';
-import TweetBuff from './schema/tweet_buff';
+import Company from './models/company';
+import Price from './models/price';
+import Event from './models/event';
+import Activity from './models/activity';
+import Hashtag from './models/hashtag';
+import Tweet from './models/tweet';
+import TweetBuff from './models/tweet_buff';
 import { TwitterType } from './twitter_type';
+import {Sequelize} from "sequelize-typescript";
+import { SequelizeConnection } from './sequelize_connection';
+import Country from './models/country';
+import {Op, fn, col} from "sequelize";
 
 export class DatabaseService {
 
-	private getDBUri(): string { 
-		return `mongodb+srv://${process.env.mongodb_user}:${process.env.mongodb_password}` +
-			`@cluster0-iyhzw.mongodb.net/cheeki-breeki?retryWrites=true&w=majority`
+	private sequelizeConnection: SequelizeConnection;
+
+	constructor() {
+		this.sequelizeConnection = new SequelizeConnection();
 	}
 
-	public init(): Promise<void> {
-		return new Promise<void>((resolve, reject) => {
-			console.log('Initializing database...');
-			mongoose.connect(this.getDBUri(), { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: true })
-				.then( () => {
-					console.log("Database connected successfully");
-					mongoose.Promise = global.Promise;
-					resolve();
-				})
-				.catch(err => {
-					console.error(`Error during initialize database ${err}`);
-					reject(err);
-				});
+	public init(): Promise<Sequelize> {
+		return this.sequelizeConnection.getConnection();
+	} 
+
+	public close(): Promise<void> {
+		return this.sequelizeConnection.close();
+	}
+
+	public findActiveCompanies(): Promise<Array<Company>> {
+		return Company.findAll({
+			include: [{
+				model: Country,
+				where: {
+					active: true
+				}
+			}]
 		});
 	}
 
-	public close(): void {
-		console.log('Close Database connection');
-		mongoose.connection.close();
-	}
-
-	public findActiveCompanies(): Promise<Array<Object>> {
-		return Country.find({}).then( countries => {
-			let activeCountries = countries.filter(o => o.active);
-			return Company.find({country: {$in: activeCountries}}).populate('country').exec();
-		}).catch( err => {
-			console.error(err);
+	public findAllActiveCountries(): Promise<Array<Country>> {
+		return Country.findAll({
+			where: {
+                active: true
+            }
 		});
 	}
 
-	public findPricesForCompanyAfterDate(company: Object, date: Date): Promise<Array<Object>> {
-		return Price.find({"date": {"$gte": date}, company: company }, null, {"sort": {"date": -1}});
+	public findPricesForCompanyBetweenDate(company: Company, startDate: Date, endDate: Date): Promise<Array<Price>> {
+		return Price.findAll({
+			where: {
+				date: {
+					[Op.gte]: startDate,
+					[Op.lte]: endDate
+				},
+				company_id: company.id
+			},
+			order: [
+				['date', 'DESC']
+			]
+		});
 	}
 
-	public findEventsByDate(date: Date): Promise<Array<Object>> {
-		return Event.find({date: date}).exec();
+	public findActivitiesByDate(date: Date): Promise<Array<Activity>> {
+		return Activity.findAll({
+			include: [{
+				model: Event,
+				where: {
+					created_date: {
+						[Op.eq]: date
+					}
+				},
+				include: [{
+					model: Company
+				}]
+			}]
+		})
 	}
 
-	public findActivityByEvent(event: Object): Promise<Array<Object>> {
-		return Activity.find({event: event}).populate({
-			path: 'event',
-			populate: {path: 'company'}
-		}).exec();
+	public findMinDateOfEvent(company: Company): any {
+		return Event.findAll({
+            attributes: [[fn('MIN', col('created_date')), 'minDate']],
+			include: [{
+            	model: Company,
+				where: {
+            		name: company.name
+				}
+			}]
+		})
 	}
 
-	public findHashtagsWithCompany(): Promise<Array<Object>> {
-		return Hashtag.find({type: TwitterType.HASHTAG}).populate('company').exec();
+	public findHashtagsWithCompany(): Promise<Array<Hashtag>> {
+		return Hashtag.findAll({
+			where: {
+				type: TwitterType.HASHTAG
+			},
+			include: [{
+				model: Company
+			}]
+		});
 	}
 
-	public processTweetAndInformIfNotExist(tweetBuff): Promise<void> {
+	public processTweetAndInformIfNotExist(tweetBuff: Object): Promise<void> {
+		console.log(tweetBuff);
 	    return new Promise<void>( (resolve, reject) => {
-            TweetBuff.findOne(tweetBuff).exec()
-                .then((data) => {
-                    if (data) {
-                        console.log('Found in buff');
-                        reject('Tweet exists in buff');
-                    } else {
-                        console.log('Didn\'t find in buff');
-                        TweetBuff.create(tweetBuff);
-                        return resolve();
-                    }
-                });
+            TweetBuff.findOne({
+				where: {
+					tweet_id: {
+						[Op.eq]: tweetBuff['tweet_id']
+					},
+					date: {
+						[Op.eq]: new Date(tweetBuff['date'])
+					}
+				}
+			}).then((data) => {
+				if (data) {
+					console.log('Found in buff');
+					reject('Tweet exists in buff');
+				} else {
+					console.log('Didn\'t find in buff');
+					TweetBuff.create(tweetBuff);
+					return resolve();
+				}
+			});
         });
-	}
-	
-	public findTweetAggregateForCompanyAndDate(company: Object, date: Date): Promise<Object> {
-		return Tweet.findOne({company: company, date: date}).exec();
 	}
 
 	public deleteTweetsBuffOlderThat(lastDate: Date): Promise<void> {
-		return TweetBuff.deleteMany({date: {$lt: lastDate}}).exec();
+		return TweetBuff.destroy({
+			where: {
+				date: {
+					[Op.lt]: lastDate
+				}
+			}
+		});
 	}
 }
